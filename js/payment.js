@@ -2,16 +2,16 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
-  const plan = params.get('plan') === 'lifetime' ? 'lifetime' : 'yearly';
   const email = params.get('email') || '';
+  let currentPlan = params.get('plan') === 'lifetime' ? 'lifetime' : 'yearly';
 
   const planNames = { yearly: 'اشتراك سنوي', lifetime: 'اشتراك مدى الحياة' };
-  const planPrices = { yearly: '$10', lifetime: '$20' };
+  const planPrices = { yearly: '$10', lifetime: '$25' };
 
-  document.getElementById('planName').textContent = planNames[plan];
-  document.getElementById('planPrice').innerHTML = `<bdi>${planPrices[plan]}</bdi>`;
+  const toggleBtns = document.querySelectorAll('.plan-toggle-btn');
+  const telegramLink = document.getElementById('telegramCta');
 
-  // رقم طلب مرجعي بسيط لتسهيل المطابقة عند التواصل
+  // رقم طلب مرجعي بسيط لتسهيل المطابقة عند التواصل — ثابت طول الجلسة حتى لو بدّل الخطة
   const refCode = 'MSB-' + Math.floor(100000 + Math.random() * 900000);
   const refBtn = document.getElementById('refCode');
   refBtn.textContent = refCode;
@@ -22,17 +22,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // رابط تيليجرام مع رسالة جاهزة
-  const messageLines = [
-    `مرحباً، أريد إتمام الدفع لاشتراك MedSBoX Pro.`,
-    `الخطة: ${planNames[plan]} (${planPrices[plan]})`,
-    `رقم الطلب المرجعي: ${refCode}`
-  ];
-  if (email) messageLines.push(`البريد المسجل: ${email}`);
-  const message = messageLines.join('\n');
+  function renderPlan() {
+    toggleBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.plan === currentPlan));
 
-  const telegramLink = document.getElementById('telegramCta');
-  telegramLink.href = `https://t.me/ID29i?text=${encodeURIComponent(message)}`;
+    const messageLines = [
+      `مرحباً، أريد إتمام الدفع لاشتراك MedSBoX Pro.`,
+      `الخطة: ${planNames[currentPlan]} (${planPrices[currentPlan]})`,
+      `رقم الطلب المرجعي: ${refCode}`
+    ];
+    if (email) messageLines.push(`البريد المسجل: ${email}`);
+    telegramLink.href = `https://t.me/ID29i?text=${encodeURIComponent(messageLines.join('\n'))}`;
+  }
+
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentPlan = btn.dataset.plan;
+      renderPlan();
+    });
+  });
+
+  renderPlan();
 
   // ظهور تدريجي للعناصر عند التمرير
   const revealEls = document.querySelectorAll('.reveal');
