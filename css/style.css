@@ -305,6 +305,9 @@ h1,h2{ font-weight: 900; letter-spacing: -.01em; }
 .auth-form{ display: flex; flex-direction: column; gap: 14px; }
 .auth-form.hidden{ display: none; }
 .auth-form label{ font-size: 13.5px; color: var(--ink-soft); display: flex; flex-direction: column; gap: 6px; }
+.auth-message{ font-size: 13.5px; text-align: center; min-height: 0; }
+.auth-message.success{ color: #0E7C42; background: rgba(46,204,113,.12); padding: 10px; border-radius: 12px; margin-bottom: 6px; }
+.auth-message.error{ color: #B3261E; background: rgba(211,47,47,.1); padding: 10px; border-radius: 12px; margin-bottom: 6px; }
 .auth-form input{ font-family: inherit; font-size: 15px; padding: 13px 15px; border-radius: var(--radius-sm); border: 1.5px solid rgba(12,27,36,.12); background: rgba(255,255,255,.7); color: var(--ink); }
 .auth-form input:focus{ outline: none; border-color: var(--brand); background: #fff; }
 .auth-note{ font-size: 12.5px; color: var(--ink-soft); text-align: center; margin-top: 18px; }
