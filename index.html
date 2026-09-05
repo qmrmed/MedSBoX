@@ -185,8 +185,24 @@
       <label>الاسم الكامل
         <input type="text" name="fullname" required placeholder="اسمك">
       </label>
-      <label>رقم الهاتف
-        <input type="tel" name="phone" required placeholder="07xxxxxxxxx">
+      <label>الدولة
+        <select name="country">
+          <option value="IQ" selected>العراق (+964)</option>
+          <option value="SA">السعودية (+966)</option>
+          <option value="AE">الإمارات (+971)</option>
+          <option value="EG">مصر (+20)</option>
+          <option value="JO">الأردن (+962)</option>
+          <option value="KW">الكويت (+965)</option>
+          <option value="QA">قطر (+974)</option>
+          <option value="BH">البحرين (+973)</option>
+          <option value="OM">عُمان (+968)</option>
+          <option value="LB">لبنان (+961)</option>
+          <option value="SY">سوريا (+963)</option>
+          <option value="OTHER">دولة أخرى</option>
+        </select>
+      </label>
+      <label>رقم الهاتف (اختياري)
+        <input type="tel" name="phone" placeholder="رقمك بدون الصفر بالبداية">
       </label>
       <label>البريد الإلكتروني
         <input type="email" name="email" required placeholder="example@mail.com">
