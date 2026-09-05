@@ -106,11 +106,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ===== إنشاء حساب جديد =====
+  const dialCodes = { IQ:'+964', SA:'+966', AE:'+971', EG:'+20', JO:'+962', KW:'+965', QA:'+974', BH:'+973', OM:'+968', LB:'+961', SY:'+963', OTHER:'' };
+
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     clearMessage();
     const fullname = registerForm.fullname.value.trim();
-    const phone = registerForm.phone.value.trim();
+    const country = registerForm.country.value;
+    const phoneRaw = registerForm.phone.value.trim();
+    const phone = phoneRaw ? `${dialCodes[country] || ''} ${phoneRaw}`.trim() : '';
     const email = registerForm.email.value.trim();
     const password = registerForm.password.value;
     const plan = registerForm.dataset.selectedPlan || 'yearly';
@@ -121,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await setDoc(doc(db, 'users', cred.user.uid), {
         fullname,
+        country,
         phone,
         email,
         plan,
