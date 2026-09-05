@@ -132,8 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
         subscriptionStatus: 'pending', // pending | active | expired
         createdAt: serverTimestamp()
       });
-      showMessage('تم إنشاء الحساب بنجاح ✅ خطوة الدفع وصفحة التفعيل راح تُضاف بالخطوة القادمة.', 'success');
-      registerForm.reset();
+      showMessage('تم إنشاء الحساب بنجاح ✅ جاري تحويلك لصفحة الدفع...', 'success');
+      const redirectUrl = `payment.html?plan=${encodeURIComponent(plan)}&email=${encodeURIComponent(email)}`;
+      setTimeout(() => { window.location.href = redirectUrl; }, 1400);
     } catch (err) {
       showMessage(friendlyError(err.code), 'error');
     } finally {
