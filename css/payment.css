@@ -21,6 +21,26 @@
 .plan-summary-name{ font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 17px; }
 .plan-summary-price{ font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 26px; color: var(--brand-deep); }
 
+/* Plan toggle — switch between yearly / lifetime right on the payment page */
+.plan-toggle{
+  display: flex; gap: 8px; padding: 8px; max-width: 420px; margin: 0 auto;
+}
+.plan-toggle-btn{
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  border: none; background: transparent; cursor: pointer;
+  padding: 14px 10px; border-radius: var(--radius-md);
+  font-family: 'Almarai', sans-serif; color: var(--ink-soft);
+  transition: background .2s ease, color .2s ease, transform .15s ease;
+}
+.plan-toggle-btn .pt-name{ font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 14px; }
+.plan-toggle-btn .pt-price{ font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 19px; }
+.plan-toggle-btn.active{
+  background: linear-gradient(160deg, var(--brand-2), var(--brand-deep));
+  color: #fff; transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(8,61,68,.3);
+}
+.plan-toggle-btn.active .pt-name, .plan-toggle-btn.active .pt-price{ color: #fff; }
+
 /* Steps */
 .steps-section{ margin-bottom: 54px; }
 .steps-section h2{ text-align: center; font-size: 24px; margin-bottom: 30px; }
