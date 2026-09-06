@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المكتبة — MedSBoX Pro</title>
+<link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Almarai:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/library.css?v=1">
+</head>
+<body>
+
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+
+<div class="header-dock">
+  <header class="site-header glass-card">
+    <div class="header-inner">
+      <a href="index.html" class="brand" style="text-decoration:none">
+        <span class="brand-mark"><span class="brand-mark-shine"></span>Sb</span>
+        <span class="brand-name">MedSBoX <em>Pro</em></span>
+      </a>
+      <button class="btn btn-glass" id="logoutBtn" hidden>تسجيل الخروج</button>
+    </div>
+  </header>
+</div>
+
+<main class="wrap lib-wrap">
+
+  <!-- إشعار بسيط لغير المشتركين، بدون قفل الصفحة كاملة -->
+  <div id="accessNotice" class="access-notice glass-card" hidden>
+    <p id="accessNoticeText"></p>
+    <a href="index.html?open=register" class="btn btn-primary" id="accessNoticeBtn">فعّل اشتراكك</a>
+  </div>
+
+  <section id="stateActive">
+    <div class="lib-hero reveal">
+      <p class="kicker">مكتبتك الطبية</p>
+      <h1>كل التطبيقات بمكان واحد</h1>
+      <p class="hero-sub">اضغط سهم التنزيل تحت الجهاز المناسب لك، وإذا اشتراكك مفعّل راح ينفتح لك رابط التحميل مباشرة.</p>
+    </div>
+
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="apps-grid" id="appsGrid"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer-wrap wrap">
+  <div class="footer-bottom">
+    <span>© <bdi>2026</bdi> MedSBoX Pro — جميع الحقوق محفوظة</span>
+  </div>
+</footer>
+
+<script type="module" src="js/library.js?v=1"></script>
+</body>
+</html>
