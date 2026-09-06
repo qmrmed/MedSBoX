@@ -4,7 +4,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/fireba
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import {
   getFirestore,
@@ -43,7 +45,8 @@ function friendlyError(code) {
 
 document.addEventListener('DOMContentLoaded', () => {
   const overlay = document.getElementById('authOverlay');
-  const openBtns = [document.getElementById('openAuthBtn'), document.getElementById('heroSubscribeBtn')];
+  const openAuthBtn = document.getElementById('openAuthBtn');
+  const heroSubscribeBtn = document.getElementById('heroSubscribeBtn');
   const closeBtn = document.getElementById('authClose');
   const tabs = document.querySelectorAll('.auth-tab');
   const loginForm = document.getElementById('loginForm');
@@ -75,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm.classList.toggle('hidden', name !== 'register');
   }
 
-  openBtns.forEach(btn => btn && btn.addEventListener('click', () => openAuth('login')));
+  heroSubscribeBtn && heroSubscribeBtn.addEventListener('click', () => openAuth('login'));
   closeBtn.addEventListener('click', closeAuth);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeAuth(); });
   tabs.forEach(tab => tab.addEventListener('click', () => setTab(tab.dataset.tab)));
@@ -84,6 +87,23 @@ document.addEventListener('DOMContentLoaded', () => {
   if (new URLSearchParams(window.location.search).get('open') === 'register') {
     openAuth('register');
   }
+
+  // زر الهيدر يتغيّر حسب حالة الدخول — يبين لك بوضوح إنك داخل حسابك فعلاً بين الصفحات
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      openAuthBtn.textContent = 'مكتبتي / خروج';
+      openAuthBtn.onclick = () => {
+        if (confirm('تحب تفتح المكتبة؟ (إلغاء = تسجيل خروج)')) {
+          window.location.href = 'library.html';
+        } else {
+          signOut(auth);
+        }
+      };
+    } else {
+      openAuthBtn.textContent = 'تسجيل الدخول';
+      openAuthBtn.onclick = () => openAuth('login');
+    }
+  });
 
   planButtons.forEach(btn => {
     btn.addEventListener('click', () => {
