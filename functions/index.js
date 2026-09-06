@@ -1,78 +1,14 @@
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
-const { onDocumentCreated } = require('firebase-functions/v2/firestore');
+const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { initializeApp } = require('firebase-admin/app');
 const { getFirestore, FieldValue, Timestamp } = require('firebase-admin/firestore');
+const { getStorage } = require('firebase-admin/storage');
 const crypto = require('crypto');
-
 initializeApp();
-const db = getFirestore();
-
-async function isAdmin(uid) {
-  if (!uid) return false;
-  const snap = await db.doc(`admins/${uid}`).get();
-  return snap.exists && snap.data().enabled === true;
-}
-
-function randomCode() {
-  const raw = crypto.randomBytes(6).toString('hex').toUpperCase();
-  return `MSB-${raw.slice(0,4)}-${raw.slice(4,8)}-${raw.slice(8,12)}`;
-}
-
-exports.createActivationCode = onCall(async (request) => {
-  if (!(await isAdmin(request.auth?.uid))) throw new HttpsError('permission-denied', 'Admin only');
-  const { planId, durationDays, note } = request.data || {};
-  if (!planId) throw new HttpsError('invalid-argument', 'planId is required');
-  const code = randomCode();
-  const days = planId === 'lifetime' ? null : Number(durationDays || 365);
-  await db.collection('activationCodes').doc(code).set({
-    code, planId, durationDays: days, note: note || '', status: 'unused',
-    createdAt: FieldValue.serverTimestamp(), createdBy: request.auth.uid
-  });
-  return { code };
-});
-
-exports.redeemActivationCode = onCall(async (request) => {
-  const uid = request.auth?.uid;
-  if (!uid) throw new HttpsError('unauthenticated', 'Login required');
-  const code = String(request.data?.code || '').trim().toUpperCase();
-  if (!code) throw new HttpsError('invalid-argument', 'Activation code is required');
-  const ref = db.doc(`activationCodes/${code}`);
-  const snap = await ref.get();
-  if (!snap.exists || snap.data().status !== 'unused') throw new HttpsError('not-found', 'Invalid or used code');
-  const data = snap.data();
-  const userRef = db.doc(`users/${uid}`);
-  const userSnap = await userRef.get();
-  if (!userSnap.exists) throw new HttpsError('failed-precondition', 'User profile not found');
-  const now = Timestamp.now();
-  const expiresAt = data.planId === 'lifetime' ? null : Timestamp.fromMillis(now.toMillis() + Number(data.durationDays || 365) * 86400000);
-  await db.runTransaction(async tx => {
-    const fresh = await tx.get(ref);
-    if (!fresh.exists || fresh.data().status !== 'unused') throw new HttpsError('aborted', 'Code already used');
-    tx.update(ref, { status: 'used', usedBy: uid, usedAt: FieldValue.serverTimestamp() });
-    tx.update(userRef, {
-      plan: data.planId, subscriptionStatus: 'active', startedAt: FieldValue.serverTimestamp(),
-      expiresAt, activatedAt: FieldValue.serverTimestamp(), activationCode: code
-    });
-  });
-  return { success: true, planId: data.planId, expiresAt: expiresAt ? expiresAt.toDate().toISOString() : null };
-});
-
-exports.createDownloadToken = onCall(async (request) => {
-  const uid = request.auth?.uid;
-  if (!uid) throw new HttpsError('unauthenticated', 'Login required');
-  const appId = String(request.data?.appId || '');
-  const platform = String(request.data?.platform || '');
-  if (!appId || !platform) throw new HttpsError('invalid-argument', 'App and platform are required');
-  const userSnap = await db.doc(`users/${uid}`).get();
-  const u = userSnap.data() || {};
-  const active = u.subscriptionStatus === 'active' && (!u.expiresAt || u.expiresAt.toMillis() > Date.now());
-  if (!active) throw new HttpsError('permission-denied', 'Active subscription required');
-  const appSnap = await db.doc(`apps/${appId}`).get();
-  if (!appSnap.exists || appSnap.data().active !== true) throw new HttpsError('not-found', 'App not found');
-  const url = appSnap.data().downloadLinks?.[platform];
-  if (!url) throw new HttpsError('not-found', 'Platform download not available');
-  await db.collection('downloadLogs').add({ userId: uid, appId, platform, createdAt: FieldValue.serverTimestamp() });
-  return { url };
-});
-
-exports.expireSubscriptions = onDocumentCreated('subscriptionJobs/{jobId}', async () => null);
+const db=getFirestore(); const bucket=getStorage().bucket();
+async function admin(uid){if(!uid)return false;const s=await db.doc(`admins/${uid}`).get();return s.exists&&s.data().enabled===true;}
+function makeCode(){const x=crypto.randomBytes(8).toString('hex').toUpperCase();return `MSB-${x.slice(0,4)}-${x.slice(4,8)}-${x.slice(8,12)}-${x.slice(12,16)}`;}
+exports.createActivationCode=onCall(async r=>{if(!(await admin(r.auth?.uid)))throw new HttpsError('permission-denied','Admin only');const planId=String(r.data?.planId||'');if(!planId)throw new HttpsError('invalid-argument','Plan required');const durationDays=planId==='lifetime'?null:Math.max(1,Number(r.data?.durationDays||365));const ref=db.doc(`activationCodes/${makeCode()}`);await ref.set({code:ref.id,planId,durationDays,status:'unused',note:String(r.data?.note||''),createdBy:r.auth.uid,createdAt:FieldValue.serverTimestamp()});return{code:ref.id};});
+exports.redeemActivationCode=onCall(async r=>{const uid=r.auth?.uid;if(!uid)throw new HttpsError('unauthenticated','Login required');const id=String(r.data?.code||'').trim().toUpperCase();if(!id)throw new HttpsError('invalid-argument','Code required');const ref=db.doc(`activationCodes/${id}`),userRef=db.doc(`users/${uid}`),now=Timestamp.now();let out;await db.runTransaction(async tx=>{const c=await tx.get(ref),u=await tx.get(userRef);if(!c.exists||c.data().status!=='unused')throw new HttpsError('not-found','Invalid or used code');if(!u.exists)throw new HttpsError('failed-precondition','Profile missing');const d=c.data();const expiresAt=d.durationDays==null?null:Timestamp.fromMillis(now.toMillis()+Number(d.durationDays)*86400000);tx.update(ref,{status:'used',usedBy:uid,usedAt:FieldValue.serverTimestamp()});tx.update(userRef,{plan:d.planId,subscriptionStatus:'active',startedAt:FieldValue.serverTimestamp(),activatedAt:FieldValue.serverTimestamp(),expiresAt});out={planId:d.planId,expiresAt:expiresAt?expiresAt.toDate().toISOString():null};});return{success:true,...out};});
+exports.createDownloadToken=onCall(async r=>{const uid=r.auth?.uid;if(!uid)throw new HttpsError('unauthenticated','Login required');const appId=String(r.data?.appId||''),platform=String(r.data?.platform||'');const u=(await db.doc(`users/${uid}`).get()).data()||{};const active=u.subscriptionStatus==='active'&&(!u.expiresAt||u.expiresAt.toMillis()>Date.now());if(!active)throw new HttpsError('permission-denied','Active subscription required');const a=await db.doc(`apps/${appId}`).get();if(!a.exists||a.data().active!==true)throw new HttpsError('not-found','App not found');const path=a.data().storagePaths?.[platform];if(!path)throw new HttpsError('not-found','File unavailable');const [url]=await bucket.file(path).getSignedUrl({version:'v4',action:'read',expires:Date.now()+600000});await db.collection('downloadLogs').add({userId:uid,appId,platform,createdAt:FieldValue.serverTimestamp()});return{url};});
+exports.expireSubscriptions=onSchedule('every 24 hours',async()=>{const now=Timestamp.now(),s=await db.collection('users').where('subscriptionStatus','==','active').where('expiresAt','<=',now).get();if(s.empty)return null;const b=db.batch();s.docs.forEach(d=>b.update(d.ref,{subscriptionStatus:'expired'}));await b.commit();return null;});
