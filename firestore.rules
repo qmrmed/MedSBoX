@@ -3,42 +3,81 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
     function admin() {
-      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
         && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
     }
+
     match /admins/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
       allow write: if false;
     }
+
     match /apps/{appId} {
       allow read: if resource.data.active == true || admin();
       allow create, update, delete: if admin();
     }
+
     match /plans/{planId} {
       allow read: if resource.data.active == true || admin();
       allow create, update, delete: if admin();
     }
+
     match /users/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || admin());
       allow create: if signedIn() && request.auth.uid == uid
         && request.resource.data.subscriptionStatus == 'pending';
-      allow update: if admin() || (signedIn() && request.auth.uid == uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['fullname','country','phone']));
+      allow update: if admin()
+        || (
+          signedIn() && request.auth.uid == uid
+          && (
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['fullname','country','phone'])
+            || (
+              request.resource.data.activationCodeUsed is string
+              && getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.status == 'used'
+              && getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.usedBy == request.auth.uid
+              && getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.planId == request.resource.data.plan
+              && request.resource.data.subscriptionStatus == 'active'
+              && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['plan','subscriptionStatus','startedAt','activatedAt','expiresAt','activationCodeUsed'])
+            )
+          )
+        );
       allow delete: if admin();
     }
+
     match /orders/{orderId} {
       allow read: if admin() || (signedIn() && resource.data.userId == request.auth.uid);
-      allow create: if signedIn() && request.resource.data.userId == request.auth.uid
-        && request.resource.data.status == 'pending';
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.planId is string
+        && exists(/databases/$(database)/documents/plans/$(request.resource.data.planId))
+        && get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.active == true
+        && request.resource.data.amount == get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.price
+        && request.resource.data.currency == get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.currency;
       allow update, delete: if admin();
     }
+
     match /activationCodes/{codeId} {
-      allow read, write: if admin();
-    }
-    match /downloadLogs/{logId} {
-      allow read: if admin() || (signedIn() && resource.data.userId == request.auth.uid);
-      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if admin();
+      allow read: if admin()
+        || (
+          signedIn()
+          && resource.data.status == 'unused'
+          && (resource.data.userId == null || resource.data.userId == request.auth.uid)
+        );
+      allow create: if admin();
+      allow update: if admin()
+        || (
+          signedIn()
+          && resource.data.status == 'unused'
+          && request.resource.data.status == 'used'
+          && request.resource.data.usedBy == request.auth.uid
+          && (resource.data.userId == null || resource.data.userId == request.auth.uid)
+          && request.resource.data.planId == resource.data.planId
+          && request.resource.data.durationDays == resource.data.durationDays
+          && request.resource.data.code == resource.data.code
+        );
+      allow delete: if admin();
     }
   }
 }
