@@ -1,149 +1,25 @@
-// ===== MedSBoX Pro — صفحة المكتبة =====
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-functions.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyATRvlq7VzIYFrVSprw5yVzv0uu5d-QrVM",
-  authDomain: "medsbox-pro.firebaseapp.com",
-  projectId: "medsbox-pro",
-  storageBucket: "medsbox-pro.firebasestorage.app",
-  messagingSenderId: "145094360411",
-  appId: "1:145094360411:web:c8a525881927c294682e7e"
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
-
-// حالة الوصول الحالية — تتحدث لما يرد الرد من Firebase، وتُقرأ وقت كل ضغطة تحميل
-let isActiveSubscriber = false;
-
-// ===== كتالوج التطبيقات — عدّل/أضف عناصر هنا وينعكس تلقائياً بالصفحة =====
-const CATALOG = [
-  {
-    name: 'Farmakon', category: 'صيدلة', badge: 'Rx',
-    color: 'linear-gradient(140deg,#14A5A0,#083D44)',
-    devices: ['Android', 'iPhone'],
-    link: 'https://t.me/QMR7S'
-  },
-  {
-    name: 'MCQStar', category: 'أدوات دراسية', badge: 'Q★',
-    color: 'linear-gradient(140deg,#E7A93F,#b5791f)',
-    devices: ['Android', 'iPhone'],
-    link: 'https://t.me/QMR7S'
-  },
-  {
-    name: 'Q2Mid', category: 'أدوات دراسية', badge: 'Q2',
-    color: 'linear-gradient(140deg,#E7A93F,#b5791f)',
-    devices: ['Android', 'Tablet'],
-    link: 'https://t.me/QMR7S'
-  },
-  {
-    name: 'Hepatix', category: 'طب', badge: 'Hx',
-    color: 'linear-gradient(140deg,#51636C,#0C1B24)',
-    devices: ['iPhone', 'iPad'],
-    link: 'https://t.me/QMR7S'
-  },
-  {
-    name: 'Medi3y', category: 'طب', badge: 'M3',
-    color: 'linear-gradient(140deg,#14A5A0,#083D44)',
-    devices: ['Android', 'iPhone', 'iPad'],
-    link: 'https://t.me/QMR7S'
-  }
+const firebaseConfig={apiKey:"AIzaSyATRvlq7VzIYFrVSprw5yVzv0uu5d-QrVM",authDomain:"medsbox-pro.firebaseapp.com",projectId:"medsbox-pro",storageBucket:"medsbox-pro.firebasestorage.app",messagingSenderId:"145094360411",appId:"1:145094360411:web:c8a525881927c294682e7e"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),functions=getFunctions(app);
+const redeem=httpsCallable(functions,'redeemActivationCode'),download=httpsCallable(functions,'createDownloadToken');
+const fallback=[
+{id:'farmakon',name:'Farmakon',category:'صيدلة',description:'أداة دوائية للطلاب والمهتمين بعلم الأدوية.',badge:'Rx',platforms:['Android','iPhone'],version:'—',featured:true,active:true},
+{id:'mcqstar',name:'MCQStar',category:'أدوات دراسية',description:'تطبيق أسئلة ومراجعة يساعدك على تنظيم الدراسة والاختبارات.',badge:'Q★',platforms:['Android','iPhone'],version:'—',active:true},
+{id:'q2mid',name:'Q2Mid',category:'أدوات دراسية',description:'أداة مساعدة للدراسة والمراجعة على الهاتف والتابلت.',badge:'Q2',platforms:['Android','Tablet'],version:'—',active:true},
+{id:'hepatix',name:'Hepatix',category:'طب',description:'تجربة تعليمية موجهة لمجال الكبد والطب السريري.',badge:'Hx',platforms:['iPhone','iPad'],version:'—',active:true},
+{id:'medi3y',name:'Medi3y',category:'طب',description:'مجموعة أدوات ومحتوى طبي للطلاب والممارسين.',badge:'M3',platforms:['Android','iPhone','iPad'],version:'—',active:true}
 ];
-
-const arrowIcon = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 4v13m0 0l-5-5m5 5l5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-function renderCatalog() {
-  const categories = ['الكل', ...new Set(CATALOG.map(a => a.category))];
-  const tabsEl = document.getElementById('catTabs');
-  const gridEl = document.getElementById('appsGrid');
-
-  function deviceBtn(device, link) {
-    return `<a href="#" class="device-dl-btn" data-link="${link}">
-      <span class="device-dl-label">${device}</span>
-      <span class="device-dl-arrow">${arrowIcon}</span>
-    </a>`;
-  }
-
-  function renderGrid(filter) {
-    const items = filter === 'الكل' ? CATALOG : CATALOG.filter(a => a.category === filter);
-    gridEl.innerHTML = items.map(app => `
-      <div class="app-card">
-        <span class="app-card-icon" style="background:${app.color}">${app.badge}</span>
-        <div>
-          <div class="app-card-name">${app.name}</div>
-          <div class="app-card-cat">${app.category}</div>
-        </div>
-        <div class="device-dl-list">${app.devices.map(d => deviceBtn(d, app.link)).join('')}</div>
-      </div>
-    `).join('');
-  }
-
-  tabsEl.innerHTML = categories.map((c, i) =>
-    `<button type="button" class="cat-tab ${i === 0 ? 'active' : ''}" data-cat="${c}">${c}</button>`
-  ).join('');
-
-  tabsEl.querySelectorAll('.cat-tab').forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabsEl.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderGrid(btn.dataset.cat);
-    });
-  });
-
-  renderGrid('الكل');
-
-  // تفويض ضغطة زر التحميل — يقرر الوجهة وقت الضغط الفعلي حسب حالة الاشتراك الحالية
-  gridEl.addEventListener('click', (e) => {
-    const btn = e.target.closest('.device-dl-btn');
-    if (!btn) return;
-    e.preventDefault();
-    if (isActiveSubscriber) {
-      window.open(btn.dataset.link, '_blank', 'noopener');
-    } else {
-      window.location.href = 'index.html?open=register';
-    }
-  });
-}
-
-function updateAccessNotice(status) {
-  const notice = document.getElementById('accessNotice');
-  const text = document.getElementById('accessNoticeText');
-  if (status === 'active') {
-    notice.hidden = true;
-    return;
-  }
-  notice.hidden = false;
-  text.textContent = status === 'pending'
-    ? 'اشتراكك بانتظار تأكيد الدفع — تصفح المكتبة متاح، وتفعيل روابط التحميل يصير بعد التفعيل.'
-    : 'سجّل دخولك وفعّل اشتراكك حتى تنفتح لك روابط تحميل التطبيقات مباشرة.';
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  renderCatalog();
-
-  const logoutBtn = document.getElementById('logoutBtn');
-  logoutBtn.addEventListener('click', () => signOut(auth).then(() => window.location.href = 'index.html'));
-
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      isActiveSubscriber = false;
-      updateAccessNotice('logged-out');
-      logoutBtn.hidden = true;
-      return;
-    }
-    logoutBtn.hidden = false;
-    try {
-      const snap = await getDoc(doc(db, 'users', user.uid));
-      const status = snap.exists() ? snap.data().subscriptionStatus : 'pending';
-      isActiveSubscriber = status === 'active';
-      updateAccessNotice(status);
-    } catch (err) {
-      isActiveSubscriber = false;
-      updateAccessNotice('pending');
-    }
-  });
-});
+let catalog=[],activeUser=null,isSubscriber=false,filter='الكل';
+const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function platformLabel(p){return {Android:'أندرويد',iPhone:'آيفون',iPad:'آيباد',Tablet:'تابلت'}[p]||p}
+function icon(a){return a.iconUrl?`<img src="${esc(a.iconUrl)}" alt="" loading="lazy">`:`<span>${esc(a.badge||a.name?.slice(0,2))}</span>`}
+function render(){const q=$('searchInput').value.trim().toLowerCase();const items=catalog.filter(a=>(filter==='الكل'||a.category===filter)&&(!q||`${a.name} ${a.category} ${a.description}`.toLowerCase().includes(q)));$('appCount').textContent=catalog.length;$('emptyState').hidden=items.length>0;$('appsGrid').innerHTML=items.map(a=>`<article class="app-card" data-id="${esc(a.id)}"><button class="app-main" data-details="${esc(a.id)}"><div class="app-card-icon">${icon(a)}</div><div class="app-card-copy"><h3>${esc(a.name)}</h3><span>${esc(a.category)}</span><p>${esc(a.description||'تطبيق متاح ضمن مكتبة MedSBoX Pro.')}</p></div><span class="chevron">‹</span></button><div class="platforms">${(a.platforms||[]).map(p=>`<button class="download-btn" data-app="${esc(a.id)}" data-platform="${esc(p)}">تحميل ${esc(platformLabel(p))} <b>↓</b></button>`).join('')}</div></article>`).join('');}
+function renderCats(){const cats=['الكل',...new Set(catalog.map(a=>a.category).filter(Boolean))];$('catTabs').innerHTML=cats.map(c=>`<button class="cat-tab ${c===filter?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}
+function details(a){$('modalContent').innerHTML=`<div class="detail-head"><div class="app-card-icon big">${icon(a)}</div><div><p class="kicker">${esc(a.category)}</p><h2>${esc(a.name)}</h2><p>${esc(a.description||'')}</p></div></div><div class="detail-meta"><span>الإصدار <b>${esc(a.version||'—')}</b></span><span>المنصات <b>${(a.platforms||[]).map(platformLabel).join(' · ')}</b></span></div>${a.features?.length?`<h3>المزايا</h3><ul>${a.features.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}<div class="detail-downloads">${(a.platforms||[]).map(p=>`<button class="btn btn-primary download-btn" data-app="${esc(a.id)}" data-platform="${esc(p)}">تحميل ${esc(platformLabel(p))}</button>`).join('')}</div>`;$('appModal').classList.add('open')}
+async function doDownload(id,platform){if(!activeUser){location.href='index.html?open=login&return=library';return}if(!isSubscriber){$('accessNotice').hidden=false;location.href='index.html#pricing';return}try{const r=await download({appId:id,platform});if(r.data?.url)location.href=r.data.url}catch(e){alert('تعذر بدء التحميل. تأكد من حالة اشتراكك وحاول مرة أخرى.')}}
+async function load(){try{const s=await getDocs(collection(db,'apps'));catalog=s.docs.map(d=>({id:d.id,...d.data()})).filter(a=>a.active!==false);if(!catalog.length)catalog=fallback}catch{catalog=fallback}renderCats();render();}
+document.addEventListener('DOMContentLoaded',()=>{load();$('searchInput').addEventListener('input',render);$('catTabs').addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(b){filter=b.dataset.cat;renderCats();render()}});$('appsGrid').addEventListener('click',e=>{const d=e.target.closest('[data-details]');if(d)return details(catalog.find(a=>a.id===d.dataset.details));const b=e.target.closest('.download-btn');if(b){e.preventDefault();e.stopPropagation();doDownload(b.dataset.app,b.dataset.platform)}});$('modalClose').onclick=()=> $('appModal').classList.remove('open');$('codeClose').onclick=()=> $('codeModal').classList.remove('open');$('accountBtn').onclick=()=>activeUser?signOut(auth).then(()=>location.reload()):location.href='index.html?open=login';$('codeForm').addEventListener('submit',async e=>{e.preventDefault();const m=$('codeMessage');try{m.textContent='جارٍ التحقق…';await redeem({code:$('activationCode').value});m.textContent='تم التفعيل بنجاح ✓';setTimeout(()=>location.reload(),700)}catch(err){m.textContent='الكود غير صالح أو مستخدم مسبقاً.'}});onAuthStateChanged(auth,u=>{activeUser=u;$('accountBtn').textContent=u?'تسجيل الخروج':'تسجيل الدخول';if(!u){isSubscriber=false;return}import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js').then(({doc,getDoc})=>getDoc(doc(db,'users',u.uid)).then(s=>{const x=s.data()||{};isSubscriber=x.subscriptionStatus==='active'&&(!x.expiresAt||x.expiresAt.toMillis()>Date.now());$('accessNotice').hidden=isSubscriber}));});});
