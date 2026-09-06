@@ -78,7 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm.classList.toggle('hidden', name !== 'register');
   }
 
-  heroSubscribeBtn && heroSubscribeBtn.addEventListener('click', () => openAuth('login'));
+  // زر "فعّل اشتراكك الآن" بالهيرو — إذا داخل حسابه يوديه مباشرة لصفحة الدفع، إذا لأ يفتح نافذة حساب جديد
+  let isLoggedIn = false;
+  heroSubscribeBtn && heroSubscribeBtn.addEventListener('click', () => {
+    if (isLoggedIn) {
+      window.location.href = 'payment.html';
+    } else {
+      openAuth('register');
+    }
+  });
   closeBtn.addEventListener('click', closeAuth);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeAuth(); });
   tabs.forEach(tab => tab.addEventListener('click', () => setTab(tab.dataset.tab)));
@@ -90,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // زر الهيدر يتغيّر حسب حالة الدخول — يبين لك بوضوح إنك داخل حسابك فعلاً بين الصفحات
   onAuthStateChanged(auth, (user) => {
+    isLoggedIn = !!user;
     if (user) {
       openAuthBtn.textContent = 'مكتبتي / خروج';
       openAuthBtn.onclick = () => {
