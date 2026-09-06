@@ -1,0 +1,116 @@
+/* ===== Library page ===== */
+
+.lib-wrap{ padding-top: 96px; padding-bottom: 60px; min-height: 70vh; }
+
+.lib-state{
+  max-width: 460px; margin: 60px auto; text-align: center;
+  padding: 40px 30px; display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+.lib-state h2{ font-family: 'Cairo', sans-serif; font-size: 20px; }
+.lib-state p{ color: var(--ink-soft); font-size: 14px; }
+
+.spinner{
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 3px solid rgba(14,124,134,.18);
+  border-top-color: var(--brand);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce){ .spinner{ animation: none; } }
+
+.lib-hero{ text-align: center; max-width: 620px; margin: 0 auto 34px; }
+.lib-hero h1{ font-size: 28px; font-weight: 900; margin: 8px 0 12px; }
+
+/* Category tabs */
+.cat-tabs{ display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 34px; }
+.cat-tab{
+  border: 1px solid rgba(8,61,68,.14);
+  background: rgba(255,255,255,.5);
+  color: var(--ink-soft);
+  font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 13.5px;
+  padding: 9px 18px; border-radius: 999px; cursor: pointer;
+  transition: background .15s ease, color .15s ease, transform .15s ease;
+}
+.cat-tab.active{
+  background: linear-gradient(150deg, var(--brand-2), var(--brand-deep));
+  color: #fff; border-color: transparent;
+  box-shadow: 0 8px 20px rgba(8,61,68,.28);
+}
+.cat-tab:hover{ transform: translateY(-1px); }
+
+/* App grid */
+.apps-grid{
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px;
+}
+.app-card{
+  background: rgba(255,255,255,.68);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: var(--radius-md);
+  padding: 22px 20px;
+  display: flex; flex-direction: column; gap: 14px;
+  box-shadow: 0 10px 28px rgba(8,61,68,.08), 0 1px 0 rgba(255,255,255,.8) inset;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.app-card:hover{ transform: translateY(-3px); box-shadow: 0 16px 34px rgba(8,61,68,.14), 0 1px 0 rgba(255,255,255,.8) inset; }
+
+.app-card-icon{
+  width: 52px; height: 52px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 16px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.5) inset, 0 6px 14px rgba(8,61,68,.22);
+}
+.app-card-name{ font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 16px; }
+.app-card-cat{ font-size: 12px; color: var(--ink-soft); margin-top: -8px; }
+
+.device-dl-list{ display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+
+/* Liquid-glass split download button: label segment + arrow segment with a fill ripple */
+.device-dl-btn{
+  display: flex; align-items: stretch;
+  height: 46px; border-radius: 14px; overflow: hidden;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(8,61,68,.22);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.device-dl-btn:hover{ transform: translateY(-2px); box-shadow: 0 12px 26px rgba(8,61,68,.3); }
+.device-dl-btn:active{ transform: translateY(0) scale(.98); }
+
+.device-dl-label{
+  flex: 1; display: flex; align-items: center; padding: 0 16px;
+  background: linear-gradient(150deg, var(--brand-2), var(--brand-deep));
+  color: #fff; font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 14px;
+}
+.device-dl-arrow{
+  position: relative; overflow: hidden;
+  width: 46px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #0E97A0, var(--brand-deep));
+  border-right: 1px solid rgba(255,255,255,.25);
+}
+.device-dl-arrow svg{ position: relative; z-index: 2; width: 18px; height: 18px; color: #fff; transition: transform .3s ease; }
+.device-dl-arrow::before{
+  content: "";
+  position: absolute; left: 50%; bottom: -10%; width: 140%; padding-top: 140%;
+  background: radial-gradient(circle, rgba(255,255,255,.85), rgba(255,255,255,.15) 60%, transparent 72%);
+  border-radius: 50%;
+  transform: translateX(-50%) scale(0);
+  transition: transform .55s cubic-bezier(.22,.85,.3,1);
+}
+.device-dl-btn:hover .device-dl-arrow::before,
+.device-dl-btn:active .device-dl-arrow::before{ transform: translateX(-50%) scale(1); }
+.device-dl-btn:hover .device-dl-arrow svg{ transform: translateY(2px); }
+
+@media (prefers-reduced-motion: reduce){
+  .device-dl-arrow::before{ transition: none; }
+}
+
+.access-notice{
+  max-width: 640px; margin: 0 auto 34px; text-align: center;
+  padding: 16px 22px; display: flex; flex-direction: column; gap: 10px; align-items: center;
+}
+.access-notice p{ font-size: 13.5px; color: var(--ink-soft); }
+
+@media (max-width: 880px){
+  .apps-grid{ grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}
