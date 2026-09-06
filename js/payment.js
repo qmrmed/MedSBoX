@@ -1,61 +1,7 @@
-// ===== MedSBoX Pro — منطق صفحة الدفع =====
-
-document.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const email = params.get('email') || '';
-  let currentPlan = params.get('plan') === 'lifetime' ? 'lifetime' : 'yearly';
-
-  const planNames = { yearly: 'اشتراك سنوي', lifetime: 'اشتراك مدى الحياة' };
-  const planPrices = { yearly: '$10', lifetime: '$25' };
-
-  const toggleBtns = document.querySelectorAll('.plan-toggle-btn');
-  const telegramLink = document.getElementById('telegramCta');
-
-  // رقم طلب مرجعي بسيط لتسهيل المطابقة عند التواصل — ثابت طول الجلسة حتى لو بدّل الخطة
-  const refCode = 'MSB-' + Math.floor(100000 + Math.random() * 900000);
-  const refBtn = document.getElementById('refCode');
-  refBtn.textContent = refCode;
-  refBtn.addEventListener('click', () => {
-    navigator.clipboard?.writeText(refCode).then(() => {
-      refBtn.classList.add('copied');
-      setTimeout(() => refBtn.classList.remove('copied'), 1600);
-    });
-  });
-
-  function renderPlan() {
-    toggleBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.plan === currentPlan));
-
-    const messageLines = [
-      `مرحباً، أريد إتمام الدفع لاشتراك MedSBoX Pro.`,
-      `الخطة: ${planNames[currentPlan]} (${planPrices[currentPlan]})`,
-      `رقم الطلب المرجعي: ${refCode}`
-    ];
-    if (email) messageLines.push(`البريد المسجل: ${email}`);
-    telegramLink.href = `https://t.me/ID29i?text=${encodeURIComponent(messageLines.join('\n'))}`;
-  }
-
-  toggleBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentPlan = btn.dataset.plan;
-      renderPlan();
-    });
-  });
-
-  renderPlan();
-
-  // ظهور تدريجي للعناصر عند التمرير
-  const revealEls = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    revealEls.forEach(el => observer.observe(el));
-  } else {
-    revealEls.forEach(el => el.classList.add('is-visible'));
-  }
-});
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";import {getFirestore,collection,getDocs} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+const cfg={apiKey:"AIzaSyATRvlq7VzIYFrVSprw5yVzv0uu5d-QrVM",authDomain:"medsbox-pro.firebaseapp.com",projectId:"medsbox-pro",storageBucket:"medsbox-pro.firebasestorage.app",messagingSenderId:"145094360411",appId:"1:145094360411:web:c8a525881927c294682e7e"};const app=initializeApp(cfg),db=getFirestore(app),auth=getAuth(app);let plans=[],currentPlan='yearly',user=null;
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function ref(){const x='MSB-'+Math.floor(100000+Math.random()*900000);$('refCode').textContent=x;return x}const refCode=ref();$('refCode').onclick=()=>navigator.clipboard?.writeText(refCode);
+function render(){const p=plans.find(x=>x.id===currentPlan)||plans[0]||{id:'yearly',name:'اشتراك سنوي',price:10,currency:'USD',durationDays:365};currentPlan=p.id;$('planToggle').innerHTML=plans.map(x=>`<button type="button" class="plan-toggle-btn ${x.id===currentPlan?'active':''}" data-plan="${esc(x.id)}"><span class="pt-name">${esc(x.name)}</span><span class="pt-price"><bdi>${esc(x.currency||'USD')} ${esc(x.price)}</bdi></span></button>`).join('');const msg=[`مرحباً، أريد الاشتراك في MedSBoX Pro.`,`الخطة: ${p.name} — ${p.price} ${p.currency||'USD'}`,`رقم الطلب: ${refCode}`];if(user?.email)msg.push(`الحساب: ${user.email}`);$('telegramCta').href='https://t.me/ID29i?text='+encodeURIComponent(msg.join('\n'));document.querySelectorAll('.plan-toggle-btn').forEach(b=>b.onclick=()=>{currentPlan=b.dataset.plan;render()})}
+async function loadPlans(){try{const s=await getDocs(collection(db,'plans'));plans=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.active!==false)}catch{}if(!plans.length)plans=[{id:'yearly',name:'اشتراك سنوي',price:10,currency:'USD',durationDays:365},{id:'lifetime',name:'اشتراك مدى الحياة',price:25,currency:'USD',durationDays:null}];const requested=new URLSearchParams(location.search).get('plan');if(requested&&plans.some(x=>x.id===requested))currentPlan=requested;render()}
+onAuthStateChanged(auth,u=>{user=u;loadPlans()});
