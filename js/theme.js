@@ -32,8 +32,25 @@
     if (button) button.setAttribute('aria-expanded', 'false');
   };
 
+  const addMobileNav = () => {
+    if (document.body.classList.contains('admin-page') || document.querySelector('.vision-bottom-nav')) return;
+    const path = location.pathname.split('/').pop() || 'index.html';
+    const active = key => (key === 'home' && (path === '' || path === 'index.html')) || (key === 'library' && path === 'library.html') || (key === 'apple' && path === 'ios-store.html') || (key === 'plans' && path === 'payment.html');
+    const nav = document.createElement('nav');
+    nav.className = 'vision-bottom-nav';
+    nav.setAttribute('aria-label', 'Quick navigation');
+    nav.innerHTML = `
+      <a href="index.html" class="${active('home') ? 'active' : ''}"><i class="fa-solid fa-house"></i><span>Home</span></a>
+      <a href="library.html" class="${active('library') ? 'active' : ''}"><i class="fa-solid fa-grid-2"></i><span>Library</span></a>
+      <a href="ios-store.html" class="${active('apple') ? 'active' : ''}"><i class="fa-brands fa-apple"></i><span>Apple</span></a>
+      <a href="payment.html" class="${active('plans') ? 'active' : ''}"><i class="fa-solid fa-sparkles"></i><span>Plans</span></a>
+      <a href="https://t.me/ID29i" target="_blank" rel="noopener" aria-label="Support"><i class="fa-brands fa-telegram"></i><span>Support</span></a>`;
+    document.body.appendChild(nav);
+  };
+
   const init = () => {
     apply(getPreference());
+    addMobileNav();
     const button = document.getElementById('themeButton');
     const menu = document.getElementById('themeMenu');
     if (button && menu) {
