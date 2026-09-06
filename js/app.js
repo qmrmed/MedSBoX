@@ -80,6 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeAuth(); });
   tabs.forEach(tab => tab.addEventListener('click', () => setTab(tab.dataset.tab)));
 
+  // إذا انفتحت الصفحة من رابط فيه ?open=register (مثلاً من زر تحميل بالمكتبة)، افتح نافذة الحساب الجديد تلقائياً
+  if (new URLSearchParams(window.location.search).get('open') === 'register') {
+    openAuth('register');
+  }
+
   planButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       openAuth('register');
@@ -97,7 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      showMessage('تم تسجيل الدخول بنجاح ✅ (صفحة المحتوى قيد الإنشاء بالخطوة القادمة)', 'success');
+      showMessage('تم تسجيل الدخول بنجاح ✅ جاري تحويلك للمكتبة...', 'success');
+      setTimeout(() => { window.location.href = 'library.html'; }, 1000);
     } catch (err) {
       showMessage(friendlyError(err.code), 'error');
     } finally {
