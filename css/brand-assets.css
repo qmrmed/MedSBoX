@@ -1,8 +1,16 @@
-/* MedSBoX Pro — separated brand assets */
-.brand .brand-logo-img{width:36px;height:36px;object-fit:contain;border-radius:11px;display:block;box-shadow:0 0 24px rgba(57,176,255,.35)}
-.site-brand-mark{width:92px;height:92px;object-fit:contain;display:block;filter:drop-shadow(0 18px 35px rgba(45,165,255,.20))}
-.site-logo-mark{width:170px;max-width:48vw;height:auto;object-fit:contain;display:block;filter:drop-shadow(0 18px 35px rgba(45,165,255,.18))}
-.app-icon-img{width:64px;height:64px;object-fit:cover;border-radius:18px;display:block;box-shadow:0 14px 32px rgba(0,0,0,.24),0 0 24px rgba(45,165,255,.16)}
-/* Legacy fallback: any remaining logo.jpg reference renders the new app icon. */
-.brand img[src*="logo.jpg"],img[src$="/logo.jpg"]{content:url('../assets/img/medsbox-app-icon.png')!important}
-@media(max-width:760px){.brand .brand-logo-img{width:34px;height:34px}.site-logo-mark{width:140px}.site-brand-mark{width:76px}}
+/* MedSBoX Pro — canonical brand assets */
+/* Keep the real source images intact; this layer only controls presentation. */
+.brand .brand-logo-img{width:36px;height:36px;display:block;flex:0 0 36px;object-fit:contain;object-position:center;border-radius:11px;overflow:hidden;box-shadow:0 0 24px rgba(57,176,255,.35)}
+.site-brand-mark{width:92px;height:92px;display:block;object-fit:contain;object-position:center;flex:0 0 auto;filter:drop-shadow(0 18px 35px rgba(45,165,255,.20))}
+.site-logo-mark{width:170px;max-width:48vw;height:auto;display:block;object-fit:contain;object-position:center;filter:drop-shadow(0 18px 35px rgba(45,165,255,.18))}
+.app-icon-img{width:64px;height:64px;display:block;object-fit:contain;object-position:center;border-radius:18px;overflow:hidden;box-shadow:0 14px 32px rgba(0,0,0,.24),0 0 24px rgba(45,165,255,.16)}
+/* Never recreate/crop the old composite artwork through CSS content replacement. */
+img[src*="logo.jpg"]{content:initial!important}
+/* Protect transparent PNG/SVG brand marks from accidental distortion by generic rules. */
+img.brand-logo-img,img.site-brand-mark,img.site-logo-mark,img.app-icon-img{max-height:none}
+@media(max-width:760px){
+  .brand .brand-logo-img{width:34px;height:34px;flex-basis:34px}
+  .site-logo-mark{width:140px}
+  .site-brand-mark{width:76px;height:76px}
+  .app-icon-img{width:58px;height:58px}
+}
