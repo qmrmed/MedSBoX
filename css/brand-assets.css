@@ -3,4 +3,6 @@
 .site-brand-mark{width:92px;height:92px;object-fit:contain;display:block;filter:drop-shadow(0 18px 35px rgba(45,165,255,.20))}
 .site-logo-mark{width:170px;max-width:48vw;height:auto;object-fit:contain;display:block;filter:drop-shadow(0 18px 35px rgba(45,165,255,.18))}
 .app-icon-img{width:64px;height:64px;object-fit:cover;border-radius:18px;display:block;box-shadow:0 14px 32px rgba(0,0,0,.24),0 0 24px rgba(45,165,255,.16)}
+/* Legacy fallback: any remaining logo.jpg reference renders the new app icon. */
+.brand img[src*="logo.jpg"],img[src$="/logo.jpg"]{content:url('../assets/img/medsbox-app-icon.png')!important}
 @media(max-width:760px){.brand .brand-logo-img{width:34px;height:34px}.site-logo-mark{width:140px}.site-brand-mark{width:76px}}
