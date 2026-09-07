@@ -21,6 +21,7 @@
   };
 
   const setPreference = preference => {
+    if (!['system', 'light', 'dark'].includes(preference)) return;
     localStorage.setItem(STORAGE_KEY, preference);
     apply(preference);
   };
@@ -41,9 +42,9 @@
     nav.setAttribute('aria-label', 'Quick navigation');
     nav.innerHTML = `
       <a href="index.html" class="${active('home') ? 'active' : ''}"><i class="fa-solid fa-house"></i><span>Home</span></a>
-      <a href="library.html" class="${active('library') ? 'active' : ''}"><i class="fa-solid fa-grid-2"></i><span>Library</span></a>
+      <a href="library.html" class="${active('library') ? 'active' : ''}"><i class="fa-solid fa-table-cells"></i><span>Library</span></a>
       <a href="ios-store.html" class="${active('apple') ? 'active' : ''}"><i class="fa-brands fa-apple"></i><span>Apple</span></a>
-      <a href="payment.html" class="${active('plans') ? 'active' : ''}"><i class="fa-solid fa-sparkles"></i><span>Plans</span></a>
+      <a href="payment.html" class="${active('plans') ? 'active' : ''}"><i class="fa-solid fa-star"></i><span>Plans</span></a>
       <a href="https://t.me/ID29i" target="_blank" rel="noopener" aria-label="Support"><i class="fa-brands fa-telegram"></i><span>Support</span></a>`;
     document.body.appendChild(nav);
   };
