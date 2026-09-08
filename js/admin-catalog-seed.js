@@ -1,5 +1,6 @@
 import './admin-apple.js';
 import './admin-apple-seed.js';
+import './admin-apple-plan-sync.js';
 import './admin-code-manager.js';
 import { getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
