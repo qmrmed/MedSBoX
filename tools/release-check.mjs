@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
 const failures = [];
@@ -43,6 +44,14 @@ for (const file of files.filter(f => f.endsWith('.html'))) {
   if (!/<title>[^<]+<\/title>/i.test(text)) fail(`${source} is missing a title element`);
 }
 
+for (const file of files.filter(f => f.endsWith('.js'))) {
+  const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
+  if (result.status !== 0) {
+    const detail = String(result.stderr || result.stdout || '').trim().split('\n').slice(0, 3).join(' ');
+    fail(`${rel(file)} has invalid JavaScript syntax${detail ? `: ${detail}` : '.'}`);
+  }
+}
+
 const payment = fs.readFileSync(path.join(root, 'js/payment.js'), 'utf8');
 if (/const\s+fallback\s*=|DEFAULT_PLANS|price\s*:\s*10|price\s*:\s*25/.test(payment)) {
   fail('js/payment.js still contains hardcoded plan fallback/pricing.');
@@ -77,7 +86,7 @@ if (!rules.includes('match /iosDownloads/{appId}')) fail('firestore.rules is mis
 
 note(`Checked ${files.length} repository files.`);
 note(`Release candidate: v${version}`);
-note('Local references, release metadata, public hardcoded catalogs, admin sections, and core Firestore protections checked.');
+note('Local references, JavaScript syntax, release metadata, public hardcoded catalogs, admin sections, and core Firestore protections checked.');
 
 if (failures.length) {
   console.error(`\nMedSBoX release check FAILED (${failures.length})`);
