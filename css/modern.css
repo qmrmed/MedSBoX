@@ -1,3 +1,3 @@
-/* Legacy modern layer intentionally neutralized.
-   Vision 27 + futuristic + final-polish provide the canonical MedSBoX Pro visual system. */
-@import url("vision27.css");
+/* MedSBoX Pro legacy compatibility entrypoint.
+ * Visual ownership is now centralized in design-system.css and page component layers.
+ */
