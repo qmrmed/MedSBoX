@@ -1,4 +1,6 @@
-/* MedSBoX Pro — canonical approved brand system */
+@import url('./design-system.css');
+
+/* MedSBoX Pro — canonical approved brand assets */
 .brand .brand-logo-img{width:38px;height:38px;display:block;flex:0 0 38px;object-fit:contain;object-position:center;border-radius:12px;filter:drop-shadow(0 0 16px rgba(77,231,255,.42))}
 .site-brand-mark{width:92px;height:92px;display:block;flex:0 0 auto;object-fit:contain;object-position:center;filter:drop-shadow(0 12px 28px rgba(77,231,255,.28))}
 .site-logo-mark{width:250px;max-width:68vw;height:auto;display:block;object-fit:contain;object-position:left center;filter:drop-shadow(0 12px 30px rgba(77,231,255,.24))}
