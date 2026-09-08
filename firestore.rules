@@ -27,8 +27,7 @@ service cloud.firestore {
             getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.status=='used'&&
             getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.usedBy==request.auth.uid&&
             getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.planId==request.resource.data.plan&&
-            activePlan(request.resource.data.plan)&&
-            request.resource.data.subscriptionStatus=='active'&&
+            activePlan(request.resource.data.plan)&&request.resource.data.subscriptionStatus=='active'&&
             request.resource.data.diff(resource.data).affectedKeys().hasOnly(['plan','subscriptionStatus','startedAt','activatedAt','expiresAt','activationCodeUsed','updatedAt'])&&
             validActivationDates(getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data,request.resource.data)
           )
@@ -51,7 +50,14 @@ service cloud.firestore {
     }
     match /activationCodes/{codeId}{
       allow read:if admin()||(signedIn()&&resource.data.status=='unused'&&(resource.data.userId==null||resource.data.userId==request.auth.uid));
-      allow create:if admin()&&request.resource.data.code==codeId&&request.resource.data.status=='unused'&&request.resource.data.planId is string&&exists(/databases/$(database)/documents/plans/$(request.resource.data.planId))&&request.resource.data.durationDays==get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.durationDays&&request.resource.data.orderId is string&&getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.status=='code_issued'&&getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.codeId==codeId&&getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.planId==request.resource.data.planId;
+      allow create:if admin()&&request.resource.data.code==codeId&&request.resource.data.status=='unused'&&request.resource.data.planId is string&&activePlan(request.resource.data.planId)&&request.resource.data.durationDays==get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.durationDays&&(
+        (request.resource.data.orderId==null)||(
+          request.resource.data.orderId is string&&
+          getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.status=='code_issued'&&
+          getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.codeId==codeId&&
+          getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.planId==request.resource.data.planId
+        )
+      );
       allow update:if admin()||(
         signedIn()&&resource.data.status=='unused'&&request.resource.data.status=='used'&&request.resource.data.usedBy==request.auth.uid&&
         (resource.data.userId==null||resource.data.userId==request.auth.uid)&&request.resource.data.planId==resource.data.planId&&request.resource.data.durationDays==resource.data.durationDays&&request.resource.data.code==resource.data.code
