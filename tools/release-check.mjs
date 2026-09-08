@@ -95,10 +95,12 @@ if (/allow\s+(read|write|create|update|delete)\s*:\s*true\s*;/.test(rules)) fail
 if (!rules.includes('match /appDownloads/{appId}')) fail('firestore.rules is missing protected appDownloads rules.');
 if (!rules.includes('match /offerDownloads/{offerId}')) fail('firestore.rules is missing protected offerDownloads rules.');
 if (!rules.includes('match /iosDownloads/{appId}')) fail('firestore.rules is missing protected iosDownloads rules.');
+if (!rules.includes('function validActivationDates(codeData,userData)')) fail('firestore.rules is missing activation date integrity validation.');
+if (!rules.includes("userData.expiresAt>request.time+duration.value(codeData.durationDays,'d')-duration.value(5,'m')")) fail('firestore.rules does not enforce the expected annual/lifetime activation window.');
 
 note(`Checked ${files.length} repository files.`);
 note(`Release candidate: v${version}`);
-note('Checked local references, JavaScript syntax, release metadata, public hardcoded catalogs/pricing, checkout persistence, admin sections, and core Firestore protections.');
+note('Checked local references, JavaScript syntax, release metadata, public hardcoded catalogs/pricing, checkout persistence, admin sections, activation expiry integrity, and core Firestore protections.');
 
 if (failures.length) {
   console.error(`\nMedSBoX release check FAILED (${failures.length})`);
