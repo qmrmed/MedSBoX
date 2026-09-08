@@ -1,5 +1,25 @@
 # MedSBoX Pro Changelog
 
+## v1.2.1 — Major architecture, security & experience release
+
+- Unified the public catalog around live Firestore data and removed runtime dependence on a hardcoded Library fallback.
+- Added protected application, offer, and Apple download collections so private Telegram delivery links are not part of public catalog metadata.
+- Added automatic migration of legacy application Telegram links into protected `appDownloads` records.
+- Reworked the Apple Store around live Admin-controlled applications and plans, including iPhone/iPad availability, pricing, subscription type, priority, publishing state, and protected delivery links.
+- Connected Apple Store plans to the shared order and activation lifecycle through mirrored `plans` records.
+- Hardened Annual/Lifetime activation with one-time transactional code consumption and plan/duration validation.
+- Added a dedicated Activation Code Manager with visible generated codes, copy controls, order/account association, and deletion controls.
+- Strengthened order creation validation in Firestore for identity, document ID, required fields, active plan, price, currency, and pending status.
+- Strengthened Hosting behavior with clean URLs, no trailing slash, HTML freshness headers, content-type protection, and strict-origin referrer policy.
+- Added a branded 404 recovery experience.
+- Added stable hash navigation for Admin sections and preserved the Users section against markup regressions.
+- Added a dependency-free release integrity checker and a mandatory release QA gate.
+- Added public crawler policy and sitemap files for the discoverable site surface.
+- Made homepage subscription cards refresh from Admin-controlled Firestore plans at runtime rather than relying on client fallback pricing.
+- Improved Payment empty-state behavior and prevented disabled checkout actions when no plan is available.
+- Preserved persistent authentication sessions and password-reset handling.
+- Added a staged roadmap for future security and platform improvements, including optional Firebase App Check evaluation after compatibility and cost review.
+
 ## v1.1.2 — Security & data hygiene
 
 - Migrated legacy application Telegram download links from public `apps` documents into protected `appDownloads` records before the Admin catalog controls load.
@@ -23,15 +43,6 @@
 
 - Strengthened order creation validation with required-field, type, identity, active-plan, price, currency, and document-ID checks.
 - Preserved the existing protected collections and activation-code lifecycle.
-
-## v1.2.1 — Major architecture & experience release (planned)
-
-- Major milestone for the next large development phase.
-- Unify catalog/application contracts and reduce duplicated Admin handlers.
-- Strengthen Firestore field/type validation without exposing private delivery data.
-- Improve authentication/session states, subscription/order/activation state handling, Library discovery, Apple Store discovery, accessibility, responsive UX, and performance.
-- Introduce systematic loading/error/empty-state behavior and a repeatable regression gate.
-- Evaluate Firebase App Check as an optional security layer only after configuration and cost/compatibility review.
 
 ## v1.1.1 — Catalog, Apple Store & Activation hardening
 
