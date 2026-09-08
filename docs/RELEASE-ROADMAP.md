@@ -1,36 +1,67 @@
 # MedSBoX Pro Release Roadmap
 
-## v1.1.2 — Security & data hygiene
+The roadmap is organized as product milestones. Each milestone may contain multiple engineering commits, but production deployment is gated by the full milestone acceptance criteria.
 
-Implemented repository hardening for legacy public download links, local artifact hygiene, payment-plan fallback removal, Admin markup integrity, and release metadata.
+## v1.2.2 — Production baseline
 
-## v1.1.3 — UX & navigation hardening
+Current baseline for the account-free customer journey, live catalog, subscription plans, activation flow, protected downloads and Firebase Rules hardening.
 
-Target: make every public page predictable on mobile and desktop, improve empty/loading/error states, preserve theme preference, and keep navigation/context stable while moving between Library, Offers, Apple Store, Plans, and Activation.
+## v1.3.0 — Foundation & Architecture
 
-## v1.1.4 — Admin Control Center
+Phase 1 establishes the technical contract before major UX work:
 
-Target: consolidate overlapping Admin behavior, make Applications/Offers/Plans/Orders/Codes/Users/Apple Store controls deterministic, remove legacy handler conflicts, and make every CRUD action visibly confirm its result.
+- runtime architecture and trust boundaries;
+- domain ownership and collection responsibilities;
+- Firestore data model and lifecycle invariants;
+- security architecture and privileged-operation boundaries;
+- development conventions;
+- version-controlled Firestore indexes;
+- explicit Storage Rules wiring in Firebase configuration;
+- phase acceptance criteria.
 
-## v1.1.5 — Reliability & release QA
+See `docs/PHASE-1-FOUNDATION.md`.
 
-Target: regression-proof the subscription lifecycle, activation lifecycle, protected downloads, Firestore queries/rules, caching, and responsive layouts. The dependency-free release checker becomes a mandatory gate.
+## v1.4.0 — Brand & Design System
 
-## v1.2.1 — Major architecture and experience release
+Build the MedSBoX visual language and reusable UI system before redesigning individual pages:
 
-This is the major milestone. Work is intentionally broader than a visual refresh:
+- brand identity;
+- design tokens;
+- typography;
+- surfaces and controlled glass treatment;
+- components;
+- responsive rules;
+- accessibility states;
+- motion system.
 
-- unify catalog/application data contracts;
-- reduce duplicated Admin modules and event interception;
-- strengthen Firestore field/type validation while preserving existing records;
-- improve authentication/session routing and account states;
-- make subscription, order, and activation states explicit and auditable;
-- improve Library and Apple Store discovery and filtering;
-- introduce a more systematic loading/error/empty-state UX;
-- improve accessibility, responsive behavior, metadata, and performance;
-- evaluate Firebase App Check as a separate security layer without enabling a configuration that could unexpectedly block existing users or introduce unwanted cost;
-- keep every release change documented and regression-tested.
+## v1.5.0 — Public Website & Library
+
+Deliver the premium public experience and a substantially improved medical application marketplace.
+
+## v1.6.0 — Apple Store & Offers
+
+Build the Apple catalog experience and a complete offer/promotion lifecycle.
+
+## v1.7.0 — Commerce, Subscriptions & Activation
+
+Harden the complete order-to-access journey, including lifecycle states, idempotency, subscription access and activation integrity.
+
+## v1.8.0 — Admin Control Center & Operations
+
+Turn Admin into a real control center with catalog, commerce, access, users, system controls, auditability and operational visibility.
+
+## v1.9.0 — Security, Performance & Quality
+
+Dedicated security hardening, performance engineering, accessibility verification, observability, privacy readiness and automated quality gates.
+
+## v2.0.0 — MedSBoX Pro Production Milestone
+
+The complete product milestone after all planned phases pass final QA, security review, release checks and production verification.
 
 ## Release discipline
 
-Intermediate versions are recorded as engineering milestones even when deployment is intentionally postponed. A single local `git pull` may therefore bring multiple prepared release commits. Deployment happens only after the complete selected milestone has passed the release gate.
+- Do not deploy incomplete phases.
+- Keep version and changelog aligned.
+- Run the automated project/release checks before a release.
+- Review Firebase Rules and infrastructure configuration before deployment.
+- Prefer one controlled pull/deploy cycle after a milestone is fully ready.
