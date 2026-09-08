@@ -1,23 +1,21 @@
 # MedSBoX Pro Changelog
 
-## v1.2.3 — Complete storefront, UX & flow audit
+## v1.2.2 — Complete storefront, UX & flow audit
 
 - Completed a repository-wide public experience audit across Home, Library, Offers, Subscription, Activation, Apple Store and shared navigation.
 - Removed the visible account-registration/sign-in dependency from the customer journey.
-- Added invisible Firebase anonymous sessions only where authenticated Firestore access is required; customers never see or manage an account.
-- Fixed the subscription price path so Android checkout always presents the commercial plans as **$10 Annual** and **$25 Lifetime**, independent of stale catalog pricing.
-- Reworked download gating so pressing a download leads to the subscription/activation path unless the current anonymous session has an active subscription.
+- Kept invisible Firebase anonymous sessions only where authenticated Firestore access is required; customers never see or manage an account.
+- Fixed the Android subscription path so Annual is **$10 / year** and Lifetime is **$25 one time**, independent of stale catalog pricing.
+- Added a safe Apple Store checkout handoff so an `ios-*` plan is resolved from the live Admin-controlled Apple plans instead of silently becoming the Android Annual plan.
+- Reworked download gating so protected downloads require an active subscription while unauthenticated visitors are sent to the subscription/activation path.
 - Preserved protected Telegram download collections and subscriber-only Firestore access.
-- Improved mobile navigation, safe-area behavior, liquid-glass motion, page entry/reveal transitions, reduced-motion handling, and light/dark visual consistency.
+- Improved public homepage messaging for the 100+ Android application catalog and the two commercial plans.
+- Preserved mobile navigation, safe-area behavior, Liquid Glass motion, page entry/reveal transitions, reduced-motion handling, and light/dark visual consistency.
 - Normalized legacy public links that attempted to open registration/login so they resolve to the subscription flow.
 - Kept Admin authentication separate from the public customer experience.
-- Expanded release integrity checks for anonymous sessions, fixed subscription pricing, public flow, protected downloads, live catalogs and Firestore security.
+- Expanded release integrity checks for account-free checkout, fixed subscription pricing, public flow, protected downloads, live catalogs, Admin sections and Firestore security.
+- Fixed the project audit's JavaScript regex escaping so the audit itself runs correctly under current Node.js releases.
 - Updated project documentation to match the account-free customer architecture.
-
-## v1.2.2 — Public subscription redesign
-
-- Introduced the account-free subscription direction and Liquid Glass visual system.
-- Added Annual and Lifetime subscription messaging and Telegram activation flow.
 
 ## v1.2.1 — Major architecture, security & experience release
 
@@ -31,3 +29,21 @@
 - Strengthened order creation validation in Firestore.
 - Strengthened Hosting behavior and added a branded 404 recovery experience.
 - Added stable hash navigation for Admin sections and a release integrity gate.
+
+## v1.1.1 — Catalog, Apple Store & Activation hardening
+
+- Added Admin-controlled catalog seeding and Apple Store data management.
+- Hardened activation-code handling and protected download delivery.
+
+## v1.1.0 — Offers & Ads
+
+- Added live Offers and campaign presentation.
+- Added protected offer download delivery and related Admin controls.
+
+## v1.0.1 — Maintenance
+
+- Applied stability and presentation fixes after the initial stable release.
+
+## v1.0.0 — Initial stable release
+
+- First stable MedSBoX Pro storefront, library and Admin architecture.
