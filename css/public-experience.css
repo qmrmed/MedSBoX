@@ -1,0 +1,317 @@
+/* MedSBoX Pro — v1.5 Public Experience
+   Applies the approved brand system to the public website, Library,
+   Offers, Apple Store, Subscription and Activation journeys.
+*/
+
+:root {
+  --msb-public-max: 1180px;
+  --msb-public-content: 760px;
+  --msb-public-ease: cubic-bezier(.2,.75,.2,1);
+  --msb-public-ring: 0 0 0 4px color-mix(in srgb, var(--msb-color-primary) 18%, transparent);
+}
+
+html { text-rendering: optimizeLegibility; }
+body { -webkit-font-smoothing: antialiased; }
+
+/* Shared public shell */
+.header {
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+}
+.header .brand { min-width: 0; }
+.header .brand span { white-space: nowrap; }
+.header nav a { position: relative; }
+.header nav a::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: -7px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--msb-color-primary), var(--msb-color-accent-violet));
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 220ms var(--msb-public-ease);
+}
+.header nav a:hover::after,
+.header nav a[aria-current="page"]::after,
+.header nav a.active::after { transform: scaleX(1); }
+
+.eyebrow {
+  letter-spacing: .14em;
+  font-weight: 800;
+}
+
+.hero-copy h1 span,
+.offers-hero-copy h1 span,
+.ios-hero-copy h1 span,
+.pay-hero h1 span {
+  background: linear-gradient(105deg, var(--msb-color-primary), var(--msb-color-accent-violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-card,
+.library-stats,
+.access-notice,
+.library-toolbar,
+.offers-hero-copy,
+.offers-hero-card,
+.offers-toolbar,
+.ios-device-card,
+.explainer-card,
+.catalog-count,
+.pay-step,
+.contact-card,
+.tips-card,
+.activation-card,
+.store-entry,
+.support-note,
+.social-card,
+.footer {
+  backdrop-filter: blur(20px) saturate(135%);
+  -webkit-backdrop-filter: blur(20px) saturate(135%);
+}
+
+.hero-card:hover,
+.offers-hero-card:hover,
+.explainer-card:hover,
+.pay-step:hover,
+.social-card:hover,
+.store-entry:hover {
+  border-color: color-mix(in srgb, var(--msb-color-primary) 32%, var(--msb-color-border));
+}
+
+/* Homepage */
+.hero {
+  min-height: min(760px, calc(100vh - 100px));
+  align-items: center;
+}
+.hero-copy { position: relative; z-index: 2; }
+.hero-copy h1 { max-width: 820px; }
+.hero-copy p { font-size: clamp(1rem, 1.4vw, 1.12rem); }
+.trust { margin-top: 26px; }
+.trust span { transition: transform 220ms var(--msb-public-ease); }
+.trust span:hover { transform: translateY(-2px); }
+
+.hero-card {
+  position: relative;
+  overflow: hidden;
+}
+.hero-card::before,
+.offers-hero-card::before,
+.contact-card::before,
+.activation-card::before {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  top: -120px;
+  right: -90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--msb-color-primary) 18%, transparent), transparent 68%);
+  pointer-events: none;
+}
+
+.mini-app {
+  transition: transform 220ms var(--msb-public-ease), border-color 220ms ease, background 220ms ease;
+}
+.mini-app:hover { transform: translateX(3px); }
+
+/* Section rhythm */
+.section-title h2 { max-width: 850px; margin-inline: auto; }
+.section-title p { color: var(--msb-color-text-secondary); }
+.steps article,
+.explainer-card,
+.social-card,
+.pay-step { position: relative; overflow: hidden; }
+.steps article::before,
+.explainer-card::before,
+.pay-step::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--msb-color-primary), var(--msb-color-accent-violet), transparent);
+  opacity: .65;
+}
+
+/* Library */
+.lib-hero { align-items: end; }
+.library-stats {
+  position: relative;
+  overflow: hidden;
+}
+.library-stats::after,
+.catalog-count::after {
+  content: "";
+  position: absolute;
+  inset: auto -30px -50px auto;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--msb-color-accent-violet) 18%, transparent), transparent 70%);
+}
+.library-toolbar { position: sticky; top: 94px; z-index: 20; }
+.search-box:focus-within {
+  border-color: color-mix(in srgb, var(--msb-color-primary) 48%, var(--msb-color-border));
+  box-shadow: var(--msb-public-ring);
+}
+.cat-tabs button,
+.store-filter {
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+.cat-tabs button:hover,
+.store-filter:hover { transform: translateY(-1px); }
+.app-card,
+.store-app {
+  overflow: hidden;
+  position: relative;
+}
+.app-card::after,
+.store-app::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,.06), transparent 34%);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+.app-card:hover::after,
+.store-app:hover::after { opacity: 1; }
+
+/* Offers */
+.offers-hero { align-items: stretch; }
+.offers-hero-copy { display: flex; flex-direction: column; justify-content: center; }
+.offers-hero-card { display: flex; flex-direction: column; justify-content: center; min-height: 300px; }
+.offers-hero-card > i { font-size: 2rem; margin-bottom: 18px; }
+.offers-toolbar { justify-content: space-between; }
+.offer-card { transition: transform 220ms var(--msb-public-ease), box-shadow 220ms ease, border-color 220ms ease; }
+.offer-card:hover { transform: translateY(-4px); }
+
+/* Apple Store */
+.ios-hero { align-items: center; }
+.ios-proof-row span { min-width: 0; }
+.ios-device-card { box-shadow: inset 0 1px rgba(255,255,255,.09), 0 28px 90px rgba(0,0,0,.3), 0 0 70px color-mix(in srgb, var(--msb-color-primary) 8%, transparent) !important; }
+.store-filters { scrollbar-width: none; }
+.store-filters::-webkit-scrollbar { display: none; }
+.store-app-grid { align-items: stretch; }
+
+/* Subscription + activation */
+.pay-wrap,
+.activation-wrap { max-width: 960px !important; }
+.pay-hero,
+.activation-card { position: relative; }
+.pay-hero { text-align: center; }
+.plan-toggle { max-width: 760px; margin: 28px auto 12px; }
+.plan-status { min-height: 24px; }
+.pay-steps { counter-reset: msb-step; }
+.pay-step-num {
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--msb-color-primary) 9%, transparent);
+}
+.contact-section { align-items: stretch; }
+.contact-card,
+.tips-card { min-height: 100%; }
+.ref-code { letter-spacing: .08em; }
+.ref-code:focus-visible { box-shadow: var(--msb-public-ring); }
+.activation-card {
+  max-width: 720px;
+  margin-inline: auto;
+}
+.activation-form input {
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+.activation-form input:focus {
+  border-color: color-mix(in srgb, var(--msb-color-primary) 55%, var(--msb-color-border));
+  box-shadow: var(--msb-public-ring);
+  outline: none;
+}
+.activation-message:not(:empty) {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--msb-color-surface-elevated) 86%, transparent);
+  border: 1px solid var(--msb-color-border);
+}
+
+/* Footer */
+.footer {
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+}
+.footer-links a { transition: color 160ms ease, transform 160ms ease; }
+.footer-links a:hover { transform: translateY(-1px); }
+
+/* Loading / empty states */
+#appsGrid:empty::before,
+#storeApps:empty::before,
+#offersGrid:empty::before {
+  content: "Loading live catalog…";
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  grid-column: 1 / -1;
+  border: 1px dashed var(--msb-color-border);
+  border-radius: 24px;
+  color: var(--msb-color-text-muted);
+  background: color-mix(in srgb, var(--msb-color-surface) 55%, transparent);
+}
+
+/* Accessible keyboard experience */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--msb-color-primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 960px) {
+  .hero { min-height: auto; }
+  .library-toolbar { position: relative; top: auto; }
+}
+
+@media (max-width: 720px) {
+  .header { padding-inline: 10px !important; }
+  .header .brand span { display: none; }
+  .header .theme-switcher { margin-left: auto; }
+  .hero-card { margin-top: 8px; }
+  .trust { display: grid !important; grid-template-columns: 1fr; gap: 12px; }
+  .library-toolbar { padding: 14px !important; }
+  .search-box { min-height: 52px !important; }
+  .offers-toolbar { align-items: flex-start !important; gap: 10px; flex-direction: column; }
+  .ios-proof-row { grid-template-columns: 1fr !important; }
+  .ios-device-card { min-height: 360px !important; }
+  .plan-toggle { width: 100%; }
+  .contact-section { grid-template-columns: 1fr !important; }
+  .ref-chip { width: 100%; }
+  .ref-code { max-width: 100%; }
+}
+
+@media (max-width: 460px) {
+  .hero-copy h1,
+  .offers-hero-copy h1,
+  .ios-hero-copy h1,
+  .pay-hero h1,
+  .activation-card h1 { letter-spacing: -.055em !important; }
+  .eyebrow { font-size: .7rem; }
+  .section-title { margin-bottom: 22px !important; }
+  .footer { padding: 18px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header nav a::after,
+  .trust span,
+  .mini-app,
+  .cat-tabs button,
+  .store-filter,
+  .app-card,
+  .store-app,
+  .offer-card,
+  .footer-links a { transition: none !important; }
+}
