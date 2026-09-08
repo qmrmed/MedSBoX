@@ -4,7 +4,7 @@
 
 - Unified the public catalog around live Firestore data and removed runtime dependence on a hardcoded Library fallback.
 - Added protected application, offer, and Apple download collections so private Telegram delivery links are not part of public catalog metadata.
-- Added automatic migration of legacy application Telegram links into protected `appDownloads` records.
+- Added automatic migration of legacy application Telegram links into protected `appDownloads` records, with chunked batches for larger catalogs.
 - Reworked the Apple Store around live Admin-controlled applications and plans, including iPhone/iPad availability, pricing, subscription type, priority, publishing state, and protected delivery links.
 - Connected Apple Store plans to the shared order and activation lifecycle through mirrored `plans` records.
 - Hardened Annual/Lifetime activation with one-time transactional code consumption and plan/duration validation.
@@ -14,6 +14,7 @@
 - Added a branded 404 recovery experience.
 - Added stable hash navigation for Admin sections and preserved the Users section against markup regressions.
 - Added a dependency-free release integrity checker and a mandatory release QA gate.
+- Added an automated GitHub Actions release-integrity workflow for pushes and pull requests targeting `main`.
 - Added public crawler policy and sitemap files for the discoverable site surface.
 - Made homepage subscription cards refresh from Admin-controlled Firestore plans at runtime rather than relying on client fallback pricing.
 - Removed static homepage catalog examples and made the hero featured-app rail read from the live Admin-controlled `apps` collection.
@@ -23,6 +24,7 @@
 - Removed hardcoded homepage subscription pricing and Apple Store pricing copy in favor of Admin-controlled live states.
 - Hardened checkout integrity so Telegram is opened only after the pending order has been successfully recorded; recording failures now remain on the payment page with an actionable error state.
 - Improved Payment empty-state behavior and prevented disabled checkout actions when no plan is available.
+- Hardened Admin application deletion so protected download records are removed together with the public application, and Admin now reports protected download-link counts from the secure collection.
 - Preserved persistent authentication sessions and password-reset handling.
 - Added a staged roadmap for future security and platform improvements, including optional Firebase App Check evaluation after compatibility and cost review.
 
