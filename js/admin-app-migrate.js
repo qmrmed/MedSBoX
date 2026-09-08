@@ -9,9 +9,18 @@ if(app){
   const u=await waitForAuth();if(!u)return;
   const adminSnap=await getDoc(doc(db,'admins',u.uid));if(!adminSnap.exists()||adminSnap.data().enabled!==true)return;
   const snap=await getDocs(collection(db,'apps'));
-  const batch=writeBatch(db);let changed=0;
-  snap.docs.forEach(d=>{const data=d.data()||{},legacy=data.telegramUrls;if(!legacy||typeof legacy!=='object'||!Object.values(legacy).some(v=>String(v||'').trim()))return;batch.set(doc(db,'appDownloads',d.id),{appId:d.id,telegramUrls:legacy,updatedAt:serverTimestamp()},{merge:true});batch.update(d.ref,{telegramUrls:deleteField(),updatedAt:serverTimestamp()});changed++});
-  if(changed)await batch.commit();
+  const legacy=snap.docs.filter(d=>{const links=d.data()?.telegramUrls;return links&&typeof links==='object'&&Object.values(links).some(v=>String(v||'').trim())});
+  let changed=0;
+  for(let i=0;i<legacy.length;i+=200){
+   const batch=writeBatch(db);
+   legacy.slice(i,i+200).forEach(d=>{
+    const links=d.data()?.telegramUrls||{};
+    batch.set(doc(db,'appDownloads',d.id),{appId:d.id,telegramUrls:links,updatedAt:serverTimestamp()},{merge:true});
+    batch.update(d.ref,{telegramUrls:deleteField(),updatedAt:serverTimestamp()});
+   });
+   await batch.commit();
+   changed+=Math.min(200,legacy.length-i);
+  }
   window.__medsboxAppMigration={changed,done:true};
  };
  run().catch(e=>console.warn('Legacy app-link migration skipped:',e));
