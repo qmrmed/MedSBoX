@@ -13,11 +13,18 @@ if(app){
     const row=button.closest('tr');if(!row)return;
     const cell=row.children[2];if(!cell)return;
     const count=counts.get(button.dataset.editApp)||0;
-    const small=cell.querySelector('small');if(small)small.textContent=count?`${count} protected download link${count===1?'':'s'}`:'No protected download links';
+    const small=cell.querySelector('small');if(small){const text=count?`${count} protected download link${count===1?'':'s'}`:'No protected download links';if(small.textContent!==text)small.textContent=text}
    });
   }catch(e){console.warn('Protected download counts unavailable:',e)}
  };
- const bind=()=>{const table=$('appsTable');if(!table)return;refreshDownloadCounts();const observer=new MutationObserver(()=>refreshDownloadCounts());observer.observe(table,{childList:true,subtree:true});};
+ const bind=()=>{
+  const table=$('appsTable');if(!table)return;
+  let observer;
+  const sync=async()=>{observer?.disconnect();try{await refreshDownloadCounts()}finally{observer?.observe(table,{childList:true,subtree:true})}};
+  sync();
+  observer=new MutationObserver(()=>sync());
+  observer.observe(table,{childList:true,subtree:true});
+ };
  document.addEventListener('click',async e=>{
   const del=e.target.closest('[data-del-app]');if(!del)return;
   e.preventDefault();e.stopImmediatePropagation();
