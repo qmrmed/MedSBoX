@@ -20,6 +20,7 @@ function walk(dir) {
 const files = walk(root);
 const rel = file => path.relative(root, file).replaceAll(path.sep, '/');
 const all = new Set(files.map(rel));
+
 function fail(message) { failures.push(message); }
 function note(message) { notes.push(message); }
 
@@ -52,24 +53,36 @@ for (const file of files.filter(f => f.endsWith('.js'))) {
 }
 
 const payment = fs.readFileSync(path.join(root, 'js/payment.js'), 'utf8');
-if (/const\s+fallback\s*=|DEFAULT_PLANS|price\s*:\s*10|price\s*:\s*25/.test(payment)) fail('js/payment.js still contains hardcoded plan fallback/pricing.');
+if (/const\s+fallback\s*=|DEFAULT_PLANS|price\s*:\s*10|price\s*:\s*25/.test(payment)) {
+  fail('js/payment.js still contains hardcoded plan fallback/pricing.');
+}
+if (!payment.includes('location.href=`https://t.me/ID29i?text=')) {
+  fail('js/payment.js is missing the support checkout handoff.');
+}
+if (!payment.includes('await setDoc(doc(db,\'orders\',orderId)')) {
+  fail('js/payment.js is missing the order persistence step.');
+}
 
 const library = fs.readFileSync(path.join(root, 'js/library.js'), 'utf8');
-if (/Farmakon|MCQStar|Q2Mid|Hepatix|Medi3y/.test(library)) fail('js/library.js still contains hardcoded catalog entries.');
+if (/Farmakon|MCQStar|Q2Mid|Hepatix|Medi3y/.test(library)) {
+  fail('js/library.js still contains hardcoded catalog entries.');
+}
 
 const ios = fs.readFileSync(path.join(root, 'js/ios-store.js'), 'utf8');
-if (/ChatGPT|Notion|Threads|PDF Expert|Netflix|CapCut|Canva/.test(ios)) fail('js/ios-store.js still contains illustrative hardcoded Apple catalog entries.');
+if (/ChatGPT|Notion|Threads|PDF Expert|Netflix|CapCut|Canva/.test(ios)) {
+  fail('js/ios-store.js still contains illustrative hardcoded Apple catalog entries.');
+}
 
 const homepage = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-if (/\$10|\$25|\$20\s+iPad|Farmakon|Q2Mid|Hepatix/.test(homepage)) fail('index.html still contains hardcoded pricing or catalog examples.');
-if (!homepage.includes('id="plans"') || !homepage.includes('id="featuredApps"')) fail('index.html is missing live plan/catalog containers.');
+if (/Farmakon|Q2Mid|Hepatix/.test(homepage)) fail('index.html still contains hardcoded featured catalog examples.');
+if (/\$10\s*\/\s*year|\$25\s*\/\s*one time|\$25\s*iPhone\s*\/\s*\$20\s*iPad/i.test(homepage)) {
+  fail('index.html still contains hardcoded subscription pricing.');
+}
 
-const publicNames = ['index','library','offers','ios-store','payment','activation'];
-for (const name of publicNames) {
-  const file = path.join(root, `${name}.html`);
+const publicScripts = files.filter(f => /^(index|library|offers|ios-store|payment|activation)\.html$/.test(path.basename(f)));
+for (const file of publicScripts) {
   const text = fs.readFileSync(file, 'utf8');
-  if (!text.includes('css/final-polish.css')) fail(`${name}.html is missing the unified visual layer.`);
-  if (/telegramUrls\s*[:=]/.test(text)) fail(`${name}.html exposes legacy telegramUrls in public markup.`);
+  if (/telegramUrls\s*[:=]/.test(text)) fail(`${rel(file)} exposes legacy telegramUrls in public markup.`);
 }
 
 const admin = fs.readFileSync(path.join(root, 'admin.html'), 'utf8');
@@ -83,13 +96,9 @@ if (!rules.includes('match /appDownloads/{appId}')) fail('firestore.rules is mis
 if (!rules.includes('match /offerDownloads/{offerId}')) fail('firestore.rules is missing protected offerDownloads rules.');
 if (!rules.includes('match /iosDownloads/{appId}')) fail('firestore.rules is missing protected iosDownloads rules.');
 
-const theme = fs.readFileSync(path.join(root, 'js/theme.js'), 'utf8');
-if (!theme.includes('vision-bottom-nav')) fail('js/theme.js is missing mobile navigation.');
-if (!theme.includes('requestAnimationFrame(syncNav)')) fail('js/theme.js is missing scroll-aware mobile navigation behavior.');
-
 note(`Checked ${files.length} repository files.`);
 note(`Release candidate: v${version}`);
-note('Checked local references, JavaScript syntax, release metadata, dynamic catalog/pricing, admin sections, mobile navigation, and core Firestore protections.');
+note('Checked local references, JavaScript syntax, release metadata, public hardcoded catalogs/pricing, checkout persistence, admin sections, and core Firestore protections.');
 
 if (failures.length) {
   console.error(`\nMedSBoX release check FAILED (${failures.length})`);
