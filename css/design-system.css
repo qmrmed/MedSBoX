@@ -1,0 +1,225 @@
+/*
+ * MedSBoX Pro — Brand & Design System v1.0
+ * Source of truth: approved MedSBoX identity sheet.
+ * Philosophy: premium medical technology, restrained glass, strong hierarchy,
+ * accessible contrast, predictable interaction states, and responsive depth.
+ */
+:root {
+  /* Brand palette */
+  --msb-brand-50: #eefaff;
+  --msb-brand-100: #d8f5ff;
+  --msb-brand-200: #a9ebff;
+  --msb-brand-300: #69dcff;
+  --msb-brand-400: #2bd2ff;
+  --msb-brand-500: #168dff;
+  --msb-brand-600: #1768ff;
+  --msb-brand-700: #3f4fff;
+  --msb-violet-500: #9b5cff;
+  --msb-violet-600: #7a52ff;
+  --msb-navy-950: #020711;
+  --msb-navy-900: #041021;
+  --msb-navy-800: #07172b;
+  --msb-navy-700: #0b2039;
+
+  /* Semantic color roles */
+  --msb-color-bg: var(--msb-navy-950);
+  --msb-color-surface: rgba(9, 25, 45, .78);
+  --msb-color-surface-elevated: rgba(15, 37, 63, .88);
+  --msb-color-surface-soft: rgba(255, 255, 255, .055);
+  --msb-color-text: #f4f9ff;
+  --msb-color-text-secondary: #b8cce0;
+  --msb-color-text-muted: #8da6be;
+  --msb-color-border: rgba(169, 225, 255, .18);
+  --msb-color-border-strong: rgba(105, 220, 255, .38);
+  --msb-color-primary: var(--msb-brand-500);
+  --msb-color-primary-strong: var(--msb-brand-600);
+  --msb-color-accent: var(--msb-brand-400);
+  --msb-color-accent-violet: var(--msb-violet-500);
+  --msb-color-success: #35d99a;
+  --msb-color-warning: #ffca63;
+  --msb-color-danger: #ff6f86;
+  --msb-color-info: #70cfff;
+
+  /* Typography */
+  --msb-font-sans: Inter, "Plus Jakarta Sans", Arial, sans-serif;
+  --msb-font-display: "Plus Jakarta Sans", Inter, Arial, sans-serif;
+  --msb-text-xs: 11px;
+  --msb-text-sm: 13px;
+  --msb-text-md: 15px;
+  --msb-text-lg: 18px;
+  --msb-text-xl: 24px;
+  --msb-text-2xl: 34px;
+  --msb-text-3xl: clamp(40px, 6vw, 68px);
+  --msb-leading-tight: 1.15;
+  --msb-leading-body: 1.7;
+  --msb-leading-relaxed: 1.9;
+
+  /* Spacing */
+  --msb-space-1: 4px;
+  --msb-space-2: 8px;
+  --msb-space-3: 12px;
+  --msb-space-4: 16px;
+  --msb-space-5: 20px;
+  --msb-space-6: 24px;
+  --msb-space-7: 32px;
+  --msb-space-8: 40px;
+  --msb-space-9: 48px;
+  --msb-space-10: 64px;
+  --msb-space-11: 80px;
+  --msb-space-12: 96px;
+
+  /* Shape */
+  --msb-radius-sm: 12px;
+  --msb-radius-md: 16px;
+  --msb-radius-lg: 20px;
+  --msb-radius-xl: 28px;
+  --msb-radius-2xl: 32px;
+  --msb-radius-pill: 999px;
+
+  /* Elevation */
+  --msb-shadow-sm: 0 8px 24px rgba(0, 0, 0, .16);
+  --msb-shadow-md: 0 18px 48px rgba(0, 0, 0, .22);
+  --msb-shadow-lg: 0 28px 80px rgba(0, 0, 0, .30);
+  --msb-shadow-glow: 0 0 36px rgba(43, 210, 255, .16);
+
+  /* Glass */
+  --msb-glass-bg: rgba(8, 25, 46, .70);
+  --msb-glass-bg-strong: rgba(10, 30, 54, .86);
+  --msb-glass-border: rgba(169, 225, 255, .18);
+  --msb-glass-highlight: rgba(255, 255, 255, .10);
+  --msb-glass-blur: 18px;
+  --msb-glass-saturation: 135%;
+
+  /* Brand gradients — derived from the approved blue/cyan/violet identity */
+  --msb-gradient-brand: linear-gradient(110deg, #168dff 0%, #3f4fff 55%, #9b5cff 100%);
+  --msb-gradient-cyan: linear-gradient(120deg, #2bd2ff 0%, #168dff 100%);
+  --msb-gradient-surface: linear-gradient(145deg, rgba(15, 39, 67, .88), rgba(4, 16, 32, .72));
+  --msb-gradient-brand-soft: linear-gradient(135deg, rgba(22, 141, 255, .18), rgba(155, 92, 255, .14));
+
+  /* Motion */
+  --msb-ease-standard: cubic-bezier(.2, .75, .2, 1);
+  --msb-duration-fast: 160ms;
+  --msb-duration-normal: 220ms;
+  --msb-duration-slow: 420ms;
+
+  /* Accessibility */
+  --msb-focus-ring: 0 0 0 3px rgba(43, 210, 255, .20), 0 0 0 1px rgba(105, 220, 255, .75);
+  --msb-touch-target: 44px;
+}
+
+html[data-theme="light"] {
+  --msb-color-bg: #f5f9fd;
+  --msb-color-surface: rgba(255, 255, 255, .86);
+  --msb-color-surface-elevated: rgba(255, 255, 255, .96);
+  --msb-color-surface-soft: rgba(10, 58, 96, .045);
+  --msb-color-text: #10243a;
+  --msb-color-text-secondary: #405a72;
+  --msb-color-text-muted: #617a91;
+  --msb-color-border: rgba(25, 92, 135, .16);
+  --msb-color-border-strong: rgba(23, 141, 255, .38);
+  --msb-glass-bg: rgba(255, 255, 255, .72);
+  --msb-glass-bg-strong: rgba(255, 255, 255, .92);
+  --msb-glass-border: rgba(25, 92, 135, .16);
+  --msb-glass-highlight: rgba(255, 255, 255, .88);
+  --msb-gradient-surface: linear-gradient(145deg, rgba(255, 255, 255, .94), rgba(239, 247, 253, .82));
+  --msb-shadow-sm: 0 8px 24px rgba(19, 62, 92, .10);
+  --msb-shadow-md: 0 18px 48px rgba(19, 62, 92, .13);
+  --msb-shadow-lg: 0 28px 80px rgba(19, 62, 92, .16);
+}
+
+/* Global foundation */
+body {
+  font-family: var(--msb-font-sans);
+  color: var(--msb-color-text);
+  background-color: var(--msb-color-bg);
+}
+
+h1, h2, h3, h4, h5, h6,
+.btn, .brand, .eyebrow, .header nav a,
+input, select, textarea, button {
+  font-family: var(--msb-font-display);
+}
+
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+/* Canonical glass treatment: limited, readable, and performance-conscious. */
+.glass-card {
+  background: var(--msb-gradient-surface);
+  border-color: var(--msb-glass-border);
+  box-shadow: inset 0 1px var(--msb-glass-highlight), var(--msb-shadow-md);
+  backdrop-filter: blur(var(--msb-glass-blur)) saturate(var(--msb-glass-saturation));
+  -webkit-backdrop-filter: blur(var(--msb-glass-blur)) saturate(var(--msb-glass-saturation));
+}
+
+.header {
+  border: 1px solid var(--msb-glass-border);
+  box-shadow: inset 0 1px var(--msb-glass-highlight), var(--msb-shadow-md);
+}
+
+.btn {
+  min-height: var(--msb-touch-target);
+  border-radius: var(--msb-radius-md);
+  transition: transform var(--msb-duration-normal) var(--msb-ease-standard), box-shadow var(--msb-duration-normal) var(--msb-ease-standard), border-color var(--msb-duration-normal) var(--msb-ease-standard), background var(--msb-duration-normal) var(--msb-ease-standard);
+}
+
+.btn.primary {
+  background: var(--msb-gradient-brand);
+  box-shadow: 0 0 28px rgba(43, 210, 255, .18), inset 0 1px rgba(255,255,255,.24);
+}
+
+.btn.primary:hover { box-shadow: 0 14px 38px rgba(22, 141, 255, .22), 0 0 34px rgba(155, 92, 255, .13), inset 0 1px rgba(255,255,255,.28); }
+.btn.ghost { border-color: var(--msb-color-border); background: var(--msb-color-surface-soft); color: var(--msb-color-text-secondary); }
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: none;
+  box-shadow: var(--msb-focus-ring);
+}
+
+input, select, textarea {
+  min-height: var(--msb-touch-target);
+  border-color: var(--msb-color-border);
+  color: var(--msb-color-text);
+  background: var(--msb-color-surface-soft);
+}
+
+input::placeholder, textarea::placeholder { color: var(--msb-color-text-muted); }
+
+.eyebrow { color: var(--msb-color-accent); letter-spacing: .16em; }
+
+/* Consistent active navigation language. */
+.header nav a[aria-current="page"],
+.header nav a.active { color: var(--msb-color-accent); }
+
+/* Brand glow is an accent, never a substitute for contrast. */
+.brand .brand-logo-img { filter: drop-shadow(0 0 15px rgba(43, 210, 255, .34)); }
+
+/* Prevent expensive blur from spreading through every nested surface. */
+.modal-overlay { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+
+/* Reduced motion is a first-class theme state. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* Small-screen ergonomics */
+@media (max-width: 760px) {
+  :root {
+    --msb-space-10: 52px;
+    --msb-space-11: 64px;
+    --msb-space-12: 76px;
+  }
+  .header { width: min(100% - 16px, 1120px); top: 8px; margin-top: 8px; }
+  .btn { min-height: 44px; }
+}
+
+/* Forced-colors support keeps interactive controls discoverable. */
+@media (forced-colors: active) {
+  .btn, .glass-card, input, select, textarea { border: 1px solid CanvasText; box-shadow: none; }
+  .btn.primary { background: ButtonFace; color: ButtonText; }
+}
