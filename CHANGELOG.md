@@ -1,5 +1,18 @@
 # MedSBoX Pro Changelog
 
+## v1.5.0 — Public Website & Library Experience
+
+- Applied the approved MedSBoX Pro Brand & Design System as a dedicated public-experience layer across the storefront, Library, Offers, Apple Store, Subscription and Activation journeys.
+- Added a shared premium surface treatment with controlled blur, readable contrast, subtle depth and consistent interaction states.
+- Improved public navigation with clearer active-page indication, keyboard support, mobile ergonomics and safe-area aware bottom navigation.
+- Improved Library discovery with stronger search focus states, category interactions, catalog-card depth and live/empty-state presentation.
+- Improved Offers and Apple Store presentation with clearer hierarchy, responsive cards and consistent campaign/catalog interactions.
+- Refined Subscription and Activation surfaces for clearer conversion hierarchy, reference visibility, form focus states and support handoff.
+- Added responsive breakpoints for compact phones, tablets and desktop layouts without introducing a new dependency.
+- Corrected the reduced-motion guard in shared navigation so accessibility behavior is independent of the current color theme.
+- Added Escape-key handling for the theme menu and tightened public navigation behavior.
+- Preserved the approved MedSBoX Pro identity assets and account-free customer journey.
+
 ## v1.4.0 — Brand & Premium Design System
 
 - Established the approved MedSBoX Pro identity sheet as the visual source of truth.
