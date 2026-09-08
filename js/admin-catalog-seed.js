@@ -7,6 +7,7 @@ import './admin-app-migrate.js';
 import './admin-app-cleanup.js';
 import './admin-code-manager.js';
 import './admin-navigation.js';
+import './admin-copy-polish.js';
 import{getApps,getApp}from'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
 import{getAuth,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
 import{getFirestore,collection,getDocs,doc,setDoc,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
