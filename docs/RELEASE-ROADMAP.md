@@ -23,16 +23,21 @@ See `docs/PHASE-1-FOUNDATION.md`.
 
 ## v1.4.0 — Brand & Design System
 
-Build the MedSBoX visual language and reusable UI system before redesigning individual pages:
+Phase 2 establishes the visual source of truth before deeper page redesign:
 
-- brand identity;
-- design tokens;
-- typography;
-- surfaces and controlled glass treatment;
-- components;
-- responsive rules;
-- accessibility states;
-- motion system.
+- preserve the approved MedSBoX identity sheet and canonical logo family;
+- semantic brand and surface tokens;
+- typography and spacing scales;
+- shape, elevation and depth rules;
+- controlled glass and restrained glow treatment;
+- light and dark semantic themes;
+- component interaction states;
+- 44px touch targets and visible focus states;
+- reduced-motion and forced-colors safeguards;
+- reusable motion tokens;
+- design-system documentation and release integrity checks.
+
+See `docs/DESIGN-SYSTEM.md`.
 
 ## v1.5.0 — Public Website & Library
 
