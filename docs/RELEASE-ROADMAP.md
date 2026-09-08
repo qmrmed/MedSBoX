@@ -41,7 +41,21 @@ See `docs/DESIGN-SYSTEM.md`.
 
 ## v1.5.0 — Public Website & Library
 
-Deliver the premium public experience and a substantially improved medical application marketplace.
+Phase 3 applies the design foundation to the complete public customer journey:
+
+- premium homepage hierarchy and clearer conversion path;
+- Library discovery, search, categories, cards, detail/modal states and access messaging;
+- Offers campaign presentation and subscriber-first download messaging;
+- Apple Store device/catalog hierarchy and responsive presentation;
+- Subscription plan selection, payment handoff, order-reference visibility and support CTA;
+- Activation form, validation feedback and recovery path;
+- shared header, active navigation, theme control, mobile quick navigation and footer;
+- loading, empty, focus, hover, active and error states;
+- compact-phone, tablet and desktop responsive behavior;
+- reduced-motion and keyboard interaction safeguards;
+- no new runtime dependency and no change to the approved brand identity.
+
+See `docs/PHASE-3-PUBLIC-EXPERIENCE.md`.
 
 ## v1.6.0 — Apple Store & Offers
 
