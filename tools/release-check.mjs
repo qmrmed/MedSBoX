@@ -44,6 +44,8 @@ if(!rules.includes('function validActivationDates(codeData,userData)'))fail('fir
 if(!rules.includes("userData.expiresAt>request.time+duration.value(codeData.durationDays,'d')-duration.value(5,'m')"))fail('firestore.rules does not enforce the expected activation window.');
 const theme=fs.readFileSync(path.join(root,'js/theme.js'),'utf8');
 if(!theme.includes('normalizePublicFlow'))fail('theme.js is missing public account-flow normalization.');
+if(!theme.includes("prefers-reduced-motion"))fail('theme.js is missing reduced-motion detection.');
+if(!theme.includes("event.key === 'Escape'"))fail('theme.js is missing Escape-key handling for the theme menu.');
 
 const firebaseConfig=JSON.parse(fs.readFileSync(path.join(root,'firebase.json'),'utf8'));
 if(firebaseConfig.firestore?.rules!=='firestore.rules')fail('firebase.json is not wired to firestore.rules.');
@@ -61,9 +63,12 @@ else {
 }
 const brandAssets=fs.readFileSync(path.join(root,'css','brand-assets.css'),'utf8');
 if(!brandAssets.startsWith("@import url('./design-system.css');"))fail('brand-assets.css must activate the canonical design system globally.');
+if(!brandAssets.includes("@import url('./public-experience.css');"))fail('brand-assets.css must activate the v1.5 public experience layer globally.');
+if(!all.has('css/public-experience.css'))fail('css/public-experience.css is missing.');
 for(const asset of ['assets/img/medsbox-app-icon.svg','assets/img/medsbox-brand-mark.svg','assets/img/medsbox-logo-mark.svg','assets/img/medsbox-logo-mark-light.svg'])if(!all.has(asset))fail(`Approved brand asset is missing: ${asset}`);
 for(const doc of ['docs/DESIGN-SYSTEM.md','docs/PHASE-2-DESIGN.md'])if(!all.has(doc))fail(`${doc} is missing from Phase 2.`);
+if(!all.has('docs/PHASE-3-PUBLIC-EXPERIENCE.md'))fail('docs/PHASE-3-PUBLIC-EXPERIENCE.md is missing from v1.5.0.');
 
-note(`Checked ${files.length} repository files.`);note(`Release candidate: v${version}`);note('Checked local references, JavaScript syntax, fixed subscription pricing, account-free checkout, Telegram activation, live catalogs, admin sections, activation expiry integrity, core Firestore protections, Firebase infrastructure wiring, Phase 1 foundation, and the MedSBoX Pro Brand & Design System.');
+note(`Checked ${files.length} repository files.`);note(`Release candidate: v${version}`);note('Checked local references, JavaScript syntax, fixed subscription pricing, account-free checkout, Telegram activation, live catalogs, admin sections, activation expiry integrity, core Firestore protections, Firebase infrastructure wiring, Phase 1 foundation, the MedSBoX Pro Brand & Design System, and the v1.5 Public Experience layer.');
 if(failures.length){console.error(`\nMedSBoX release check FAILED (${failures.length})`);for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log(`MedSBoX release check PASSED for v${version}`);for(const item of notes)console.log(`- ${item}`);
