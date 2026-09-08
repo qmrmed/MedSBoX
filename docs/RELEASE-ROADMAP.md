@@ -24,23 +24,21 @@ Phase 4 turns the Apple Store and Offers surfaces into controlled product system
 
 ## v1.7.0 — Commerce, Subscriptions & Activation
 
-Phase 5 hardens the order-to-access chain:
-
-- real pending orders are created from Android checkout;
-- duplicate checkout clicks are idempotent within a session;
-- order amount/currency must match the active plan in Rules;
-- Admin code issuance is atomic with the order transition to `code_issued`;
-- activation codes are linked to orders without device-locking the customer;
-- activation validates active plan and duration integrity;
-- subscription access is denied automatically after expiry through Rules;
-- activation and code consumption remain transactional;
-- no password-based public account flow is introduced.
-
-See `docs/PHASE-5-COMMERCE-ACTIVATION.md`.
+Phase 5 hardens the order-to-access chain, real order creation, atomic code issuance, activation integrity and expiry enforcement.
 
 ## v1.8.0 — Admin Control Center & Operations
 
-Expand Admin into a complete operational console: catalog, Apple catalog, campaigns, commerce, access, users, audit trail, bulk operations, validation and recovery tooling.
+Phase 6 adds a live operations control room:
+
+- cross-domain counts for Android/Apple catalogs, offers, plans, orders, codes and users;
+- stale pending-order detection;
+- expired active-account detection;
+- orphaned activation-code detection;
+- explicit expiry reconciliation;
+- immutable Admin audit records;
+- Firestore Rules remain the authority for access control.
+
+See `docs/PHASE-6-ADMIN-OPERATIONS.md`.
 
 ## v1.9.0 — Security, Performance & Quality
 

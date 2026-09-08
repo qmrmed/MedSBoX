@@ -9,6 +9,7 @@ service cloud.firestore {
     function validActivationDates(codeData,userData){return codeData.durationDays==null?userData.expiresAt==null:(codeData.durationDays is int&&userData.expiresAt is timestamp&&userData.expiresAt>request.time+duration.value(codeData.durationDays,'d')-duration.value(5,'m')&&userData.expiresAt<request.time+duration.value(codeData.durationDays,'d')+duration.value(5,'m'));}
     function validCodeForOrder(codeData,orderData){return codeData.orderId==orderData.orderId&&codeData.planId==orderData.planId&&codeData.durationDays==get(/databases/$(database)/documents/plans/$(orderData.planId)).data.durationDays&&codeData.status=='unused';}
     match /admins/{uid}{allow read:if signedIn()&&request.auth.uid==uid;allow write:if false;}
+    match /adminAudit/{auditId}{allow read:if admin();allow create:if admin()&&request.resource.data.createdBy==request.auth.uid;allow update,delete:if false;}
     match /apps/{appId}{allow read:if resource.data.active==true||admin();allow create,update,delete:if admin();}
     match /appDownloads/{appId}{allow read:if admin()||subscriber();allow create,update,delete:if admin();}
     match /offers/{offerId}{allow read:if resource.data.active==true||admin();allow create,update,delete:if admin();}
@@ -17,52 +18,8 @@ service cloud.firestore {
     match /iosDownloads/{appId}{allow read:if admin()||subscriber();allow create,update,delete:if admin();}
     match /iosPlans/{planId}{allow read:if resource.data.active==true||admin();allow create,update,delete:if admin();}
     match /plans/{planId}{allow read:if resource.data.active==true||admin();allow create,update,delete:if admin();}
-    match /users/{uid}{
-      allow read:if signedIn()&&(request.auth.uid==uid||admin());
-      allow create:if signedIn()&&request.auth.uid==uid&&request.resource.data.subscriptionStatus=='pending';
-      allow update:if admin()||(
-        signedIn()&&request.auth.uid==uid&&(
-          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['fullname','country','phone'])||(
-            request.resource.data.activationCodeUsed is string&&
-            getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.status=='used'&&
-            getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.usedBy==request.auth.uid&&
-            getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.planId==request.resource.data.plan&&
-            activePlan(request.resource.data.plan)&&request.resource.data.subscriptionStatus=='active'&&
-            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['plan','subscriptionStatus','startedAt','activatedAt','expiresAt','activationCodeUsed','updatedAt'])&&
-            validActivationDates(getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data,request.resource.data)
-          )
-        )
-      );
-      allow delete:if admin();
-    }
-    match /orders/{orderId}{
-      allow read:if admin()||(signedIn()&&resource.data.userId==request.auth.uid);
-      allow create:if signedIn()&&request.resource.data.userId==request.auth.uid&&validOrder(request.resource.data)&&activePlan(request.resource.data.planId)&&request.resource.data.orderId==orderId&&request.resource.data.reference==orderId&&request.resource.data.amount==get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.price&&request.resource.data.currency==get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.currency;
-      allow update:if admin()&&(
-        request.resource.data.status!='code_issued'||(
-          resource.data.status=='pending'&&request.resource.data.codeId is string&&
-          getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.codeId)).data.orderId==orderId&&
-          getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.codeId)).data.planId==resource.data.planId&&
-          getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.codeId)).data.status=='unused'
-        )
-      );
-      allow delete:if admin();
-    }
-    match /activationCodes/{codeId}{
-      allow read:if admin()||(signedIn()&&resource.data.status=='unused'&&(resource.data.userId==null||resource.data.userId==request.auth.uid));
-      allow create:if admin()&&request.resource.data.code==codeId&&request.resource.data.status=='unused'&&request.resource.data.planId is string&&activePlan(request.resource.data.planId)&&request.resource.data.durationDays==get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.durationDays&&(
-        (request.resource.data.orderId==null)||(
-          request.resource.data.orderId is string&&
-          getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.status=='code_issued'&&
-          getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.codeId==codeId&&
-          getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.planId==request.resource.data.planId
-        )
-      );
-      allow update:if admin()||(
-        signedIn()&&resource.data.status=='unused'&&request.resource.data.status=='used'&&request.resource.data.usedBy==request.auth.uid&&
-        (resource.data.userId==null||resource.data.userId==request.auth.uid)&&request.resource.data.planId==resource.data.planId&&request.resource.data.durationDays==resource.data.durationDays&&request.resource.data.code==resource.data.code
-      );
-      allow delete:if admin();
-    }
+    match /users/{uid}{allow read:if signedIn()&&(request.auth.uid==uid||admin());allow create:if signedIn()&&request.auth.uid==uid&&request.resource.data.subscriptionStatus=='pending';allow update:if admin()||(signedIn()&&request.auth.uid==uid&&(request.resource.data.diff(resource.data).affectedKeys().hasOnly(['fullname','country','phone'])||(request.resource.data.activationCodeUsed is string&&getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.status=='used'&&getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.usedBy==request.auth.uid&&getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data.planId==request.resource.data.plan&&activePlan(request.resource.data.plan)&&request.resource.data.subscriptionStatus=='active'&&request.resource.data.diff(resource.data).affectedKeys().hasOnly(['plan','subscriptionStatus','startedAt','activatedAt','expiresAt','activationCodeUsed','updatedAt'])&&validActivationDates(getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.activationCodeUsed)).data,request.resource.data))));allow delete:if admin();}
+    match /orders/{orderId}{allow read:if admin()||(signedIn()&&resource.data.userId==request.auth.uid);allow create:if signedIn()&&request.resource.data.userId==request.auth.uid&&validOrder(request.resource.data)&&activePlan(request.resource.data.planId)&&request.resource.data.orderId==orderId&&request.resource.data.reference==orderId&&request.resource.data.amount==get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.price&&request.resource.data.currency==get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.currency;allow update:if admin()&&(request.resource.data.status!='code_issued'||(resource.data.status=='pending'&&request.resource.data.codeId is string&&getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.codeId)).data.orderId==orderId&&getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.codeId)).data.planId==resource.data.planId&&getAfter(/databases/$(database)/documents/activationCodes/$(request.resource.data.codeId)).data.status=='unused'));allow delete:if admin();}
+    match /activationCodes/{codeId}{allow read:if admin()||(signedIn()&&resource.data.status=='unused'&&(resource.data.userId==null||resource.data.userId==request.auth.uid));allow create:if admin()&&request.resource.data.code==codeId&&request.resource.data.status=='unused'&&request.resource.data.planId is string&&activePlan(request.resource.data.planId)&&request.resource.data.durationDays==get(/databases/$(database)/documents/plans/$(request.resource.data.planId)).data.durationDays&&((request.resource.data.orderId==null)||(request.resource.data.orderId is string&&getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.status=='code_issued'&&getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.codeId==codeId&&getAfter(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.planId==request.resource.data.planId));allow update:if admin()||(signedIn()&&resource.data.status=='unused'&&request.resource.data.status=='used'&&request.resource.data.usedBy==request.auth.uid&&(resource.data.userId==null||resource.data.userId==request.auth.uid)&&request.resource.data.planId==resource.data.planId&&request.resource.data.durationDays==resource.data.durationDays&&request.resource.data.code==resource.data.code);allow delete:if admin();}
   }
 }
