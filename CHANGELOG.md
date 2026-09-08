@@ -1,5 +1,17 @@
 # MedSBoX Pro Changelog
 
+## v1.4.0 — Brand & Premium Design System
+
+- Established the approved MedSBoX Pro identity sheet as the visual source of truth.
+- Added a semantic token-based design system covering brand colors, surfaces, typography, spacing, shape, elevation, glass, motion, and accessibility.
+- Preserved the canonical MedSBoX app icon, logo mark, full lockup, light lockup, and `Pro` treatment without redesigning the identity.
+- Activated the design system globally through the existing brand asset layer so public, catalog, subscription, activation, Apple Store, offers, and Admin surfaces share the same foundation.
+- Introduced restrained glass treatment with readable surface opacity and controlled blur rather than decorative glass on every element.
+- Added consistent focus-visible states and 44px minimum interactive targets.
+- Added reduced-motion and forced-colors safeguards to the design foundation.
+- Added documented typography, color semantics, spacing, component contracts, logo rules, glass policy, and motion rules.
+- Expanded release integrity checks to verify the design-system foundation and canonical brand assets.
+
 ## v1.3.0 — Foundation & Architecture
 
 - Established the MedSBoX runtime architecture and explicit trust boundaries.
