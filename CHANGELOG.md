@@ -19,8 +19,9 @@
 - Removed static homepage catalog examples and made the hero featured-app rail read from the live Admin-controlled `apps` collection.
 - Added a unified Vision Final visual layer: cleaner hierarchy, consistent glass surfaces, safer mobile spacing, stronger responsive typography, horizontal filter rails, improved card/button rhythm, and reduced visual clutter.
 - Added scroll-aware floating mobile navigation that minimizes while scrolling down and returns while scrolling up, reducing content obstruction while preserving one-tap navigation.
-- Added subtle ambient motion, liquid-glass sweep, button shimmer, and reduced-motion fallbacks for a more polished interaction system.
+- Added subtle ambient motion, liquid-glass sweep, button shimmer, page reveal transitions, adaptive header material, active-navigation motion, and reduced-motion fallbacks for a more polished interaction system.
 - Removed hardcoded homepage subscription pricing and Apple Store pricing copy in favor of Admin-controlled live states.
+- Hardened checkout integrity so Telegram is opened only after the pending order has been successfully recorded; recording failures now remain on the payment page with an actionable error state.
 - Improved Payment empty-state behavior and prevented disabled checkout actions when no plan is available.
 - Preserved persistent authentication sessions and password-reset handling.
 - Added a staged roadmap for future security and platform improvements, including optional Firebase App Check evaluation after compatibility and cost review.
