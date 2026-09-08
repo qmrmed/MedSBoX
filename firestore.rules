@@ -7,6 +7,14 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
         && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.enabled == true;
     }
+    function subscriber() {
+      return signedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.subscriptionStatus == 'active'
+        && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('expiresAt', null) == null
+          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('expiresAt', null) > request.time
+        );
+    }
 
     match /admins/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
@@ -18,8 +26,18 @@ service cloud.firestore {
       allow create, update, delete: if admin();
     }
 
+    match /appDownloads/{appId} {
+      allow read: if admin() || subscriber();
+      allow create, update, delete: if admin();
+    }
+
     match /offers/{offerId} {
       allow read: if resource.data.active == true || admin();
+      allow create, update, delete: if admin();
+    }
+
+    match /offerDownloads/{offerId} {
+      allow read: if admin() || subscriber();
       allow create, update, delete: if admin();
     }
 
