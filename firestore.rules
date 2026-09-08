@@ -18,6 +18,11 @@ service cloud.firestore {
       allow create, update, delete: if admin();
     }
 
+    match /offers/{offerId} {
+      allow read: if resource.data.active == true || admin();
+      allow create, update, delete: if admin();
+    }
+
     match /plans/{planId} {
       allow read: if resource.data.active == true || admin();
       allow create, update, delete: if admin();
