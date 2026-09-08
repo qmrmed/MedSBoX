@@ -1,13 +1,20 @@
 # MedSBoX Pro Changelog
 
+## v1.9.0 — Security, Performance & Quality
+
+- Added secure Firebase Hosting response headers: `nosniff`, strict referrer policy, restrictive Permissions Policy and HSTS.
+- Added explicit HTML/JavaScript no-cache policies for reliable releases.
+- Added short-lived CSS caching and longer-lived static asset caching.
+- Added a repository security/performance quality checker.
+- Added automated checks for page titles, viewport metadata, image alt attributes, security headers, cache policy and reduced-motion support.
+- Preserved Firestore as the authoritative security boundary for protected data and subscriptions.
+
 ## v1.8.0 — Admin Control Center & Operations
 
 - Added a live Admin Operations control room across catalog, commerce and access collections.
 - Added stale pending-order, expired-account and orphaned-code detection.
 - Added explicit expiry reconciliation for active accounts whose server expiry has passed.
 - Added immutable Admin audit records for reconciliation actions.
-- Kept Firestore Rules as the authoritative access-control layer.
-- Added Phase 6 operations documentation and release-gate coverage.
 
 ## v1.7.0 — Commerce, Subscriptions & Activation
 
@@ -19,60 +26,46 @@
 - Activation validates the active plan, duration integrity and issued-order linkage before granting access.
 - Subscription activation and code consumption remain one transaction.
 - Expired subscriptions are denied by the subscriber security rule without depending on client cleanup.
-- Strengthened the Admin and activation security contract without introducing password-based public accounts.
 
 ## v1.6.0 — Apple Store & Offers Experience
 
 - Upgraded the Apple Store public catalog with live search and result feedback.
-- Added category filtering that works with the live Firestore Apple catalog instead of hardcoded records.
-- Improved Apple plan presentation by prioritizing Admin-featured plans and then price.
-- Preserved device-specific protected Telegram delivery and account-free checkout handoff.
-- Added explicit offer lifecycle classification so hidden, upcoming and expired campaigns never appear as live public offers.
-- Added public Offers search plus Android/Apple platform filtering.
-- Preserved priority ordering and Admin scheduling as the campaign source of truth.
-- Kept protected offer download URLs in `offerDownloads` rather than public offer records.
+- Added category filtering, featured-plan prioritization, protected device delivery and offer lifecycle/filtering.
 
 ## v1.5.0 — Public Website & Library Experience
 
-- Applied the approved MedSBoX Pro Brand & Design System as a dedicated public-experience layer across the storefront, Library, Offers, Apple Store, Subscription and Activation journeys.
+- Applied the approved MedSBoX Pro Brand & Design System across the public customer journey.
 - Improved public navigation, Library discovery, Offers, Apple Store, Subscription and Activation presentation.
-- Added responsive breakpoints and accessibility safeguards without introducing a new dependency.
 
 ## v1.4.0 — Brand & Premium Design System
 
-- Established the approved MedSBoX Pro identity sheet as the visual source of truth.
-- Added a semantic token-based design system covering brand colors, surfaces, typography, spacing, shape, elevation, glass, motion, and accessibility.
+- Established the approved MedSBoX Pro identity sheet and semantic design-system foundation.
 
 ## v1.3.0 — Foundation & Architecture
 
-- Established runtime architecture, trust boundaries, Firestore data contracts, security architecture and development conventions.
-- Added version-controlled Firestore indexes and explicit Storage Rules wiring.
+- Established runtime architecture, trust boundaries, Firestore contracts and infrastructure wiring.
 
 ## v1.2.2 — Complete storefront, UX & flow audit
 
 - Completed the repository-wide storefront, Library, Offers, Subscription, Activation and Apple Store audit.
-- Removed visible account registration/sign-in dependency from the customer journey while preserving technical anonymous sessions where required.
-- Fixed Android pricing at **$10 / year** and **$25 one time** and hardened Apple checkout handoff.
+- Removed visible account registration/sign-in dependency and fixed Android pricing at **$10 / year** and **$25 one time**.
 
 ## v1.2.1 — Major architecture, security & experience release
 
-- Unified public catalogs around live Firestore data.
-- Added protected download collections and hardened activation/order rules.
-- Reworked Apple Store around live Admin-controlled applications and plans.
+- Unified public catalogs and protected download collections.
+- Hardened activation/order rules and Apple Store administration.
 
 ## v1.1.1 — Catalog, Apple Store & Activation hardening
 
 - Added Admin-controlled catalog seeding and Apple Store data management.
-- Hardened activation-code handling and protected download delivery.
 
 ## v1.1.0 — Offers & Ads
 
-- Added live Offers and campaign presentation.
-- Added protected offer download delivery and related Admin controls.
+- Added live Offers and protected offer download delivery.
 
 ## v1.0.1 — Maintenance
 
-- Applied stability and presentation fixes after the initial stable release.
+- Applied stability and presentation fixes.
 
 ## v1.0.0 — Initial stable release
 

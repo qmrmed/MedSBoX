@@ -4,54 +4,53 @@ The roadmap is organized as product milestones. Each milestone may contain multi
 
 ## v1.2.2 — Production baseline
 
-Current baseline for the account-free customer journey, live catalog, subscription plans, activation flow, protected downloads and Firebase Rules hardening.
+Account-free customer journey, live catalog, subscriptions, activation and protected downloads.
 
 ## v1.3.0 — Foundation & Architecture
 
-Phase 1 establishes the technical contract before major UX work.
+Technical contracts, trust boundaries, data model and infrastructure.
 
 ## v1.4.0 — Brand & Design System
 
-Phase 2 establishes the visual source of truth before deeper page redesign.
+Approved identity and semantic design foundation.
 
 ## v1.5.0 — Public Website & Library
 
-Phase 3 applies the design foundation to the complete public customer journey.
+Complete public customer journey and responsive experience.
 
 ## v1.6.0 — Apple Store & Offers
 
-Phase 4 turns the Apple Store and Offers surfaces into controlled product systems.
+Live Apple catalog, plan prioritization, offer lifecycle and platform filtering.
 
 ## v1.7.0 — Commerce, Subscriptions & Activation
 
-Phase 5 hardens the order-to-access chain, real order creation, atomic code issuance, activation integrity and expiry enforcement.
+Real orders, atomic code issuance, activation integrity and expiry enforcement.
 
 ## v1.8.0 — Admin Control Center & Operations
 
-Phase 6 adds a live operations control room:
-
-- cross-domain counts for Android/Apple catalogs, offers, plans, orders, codes and users;
-- stale pending-order detection;
-- expired active-account detection;
-- orphaned activation-code detection;
-- explicit expiry reconciliation;
-- immutable Admin audit records;
-- Firestore Rules remain the authority for access control.
-
-See `docs/PHASE-6-ADMIN-OPERATIONS.md`.
+Operations metrics, stale-order/expiry/orphan detection, expiry reconciliation and immutable Admin audit records.
 
 ## v1.9.0 — Security, Performance & Quality
 
-Dedicated security hardening, performance engineering, accessibility verification, observability, privacy readiness and automated quality gates.
+Phase 7 hardens the production surface:
+
+- secure Hosting response headers;
+- reliable cache policy for HTML/JS/CSS/static assets;
+- automated page metadata and accessibility checks;
+- automated security/performance checks;
+- continued Firestore security invariants;
+- no new runtime dependency and no public secret exposure.
+
+See `docs/PHASE-7-SECURITY-PERFORMANCE-QUALITY.md`.
 
 ## v2.0.0 — MedSBoX Pro Production Milestone
 
-The complete product milestone after all planned phases pass final QA, security review, release checks and production verification.
+Final product milestone after the full release train passes local QA, security review, release checks and production smoke testing.
 
 ## Release discipline
 
 - Do not deploy incomplete phases.
 - Keep version and changelog aligned.
-- Run the automated project/release checks before a release.
-- Review Firebase Rules and infrastructure configuration before deployment.
-- Prefer one controlled pull/deploy cycle after a milestone is fully ready.
+- Run all automated checks before a release.
+- Review Firebase Rules and Hosting headers before deployment.
+- Prefer one controlled pull/deploy cycle after the release train is fully ready.
