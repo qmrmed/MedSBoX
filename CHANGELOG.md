@@ -1,6 +1,6 @@
 # MedSBoX Pro Changelog
 
-## v1.2.3 — Complete storefront, UX & flow audit
+## v1.2.2 — Complete storefront, UX & flow audit
 
 - Completed a repository-wide public experience audit across Home, Library, Offers, Subscription, Activation, Apple Store and shared navigation.
 - Removed the visible account-registration/sign-in dependency from the customer journey.
@@ -16,11 +16,6 @@
 - Expanded release integrity checks for account-free checkout, fixed subscription pricing, public flow, protected downloads, live catalogs, Admin sections and Firestore security.
 - Fixed the project audit's JavaScript regex escaping so the audit itself runs correctly under current Node.js releases.
 - Updated project documentation to match the account-free customer architecture.
-
-## v1.2.2 — Public subscription redesign
-
-- Introduced the account-free subscription direction and Liquid Glass visual system.
-- Added Annual and Lifetime subscription messaging and Telegram activation flow.
 
 ## v1.2.1 — Major architecture, security & experience release
 
