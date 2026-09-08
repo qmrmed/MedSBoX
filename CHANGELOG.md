@@ -8,6 +8,7 @@
 - Reworked the Apple Store around live Admin-controlled applications and plans, including iPhone/iPad availability, pricing, subscription type, priority, publishing state, and protected delivery links.
 - Connected Apple Store plans to the shared order and activation lifecycle through mirrored `plans` records.
 - Hardened Annual/Lifetime activation with one-time transactional code consumption and plan/duration validation.
+- Added final Firestore activation-expiry integrity checks so annual activations cannot self-extend or switch into lifetime access by tampering with client-written expiry fields.
 - Added a dedicated Activation Code Manager with visible generated codes, copy controls, order/account association, and deletion controls.
 - Strengthened order creation validation in Firestore for identity, document ID, required fields, active plan, price, currency, and pending status.
 - Strengthened Hosting behavior with clean URLs, no trailing slash, HTML freshness headers, content-type protection, and strict-origin referrer policy.
@@ -15,6 +16,7 @@
 - Added stable hash navigation for Admin sections and preserved the Users section against markup regressions.
 - Added a dependency-free release integrity checker and a mandatory release QA gate.
 - Added an automated GitHub Actions release-integrity workflow for pushes and pull requests targeting `main`.
+- Refreshed the release workflow actions to current major versions and removed the previous Node 20 action-runtime warning path.
 - Added public crawler policy and sitemap files for the discoverable site surface.
 - Made homepage subscription cards refresh from Admin-controlled Firestore plans at runtime rather than relying on client fallback pricing.
 - Removed static homepage catalog examples and made the hero featured-app rail read from the live Admin-controlled `apps` collection.
