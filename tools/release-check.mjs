@@ -9,11 +9,7 @@ const version=fs.readFileSync(path.join(root,'VERSION'),'utf8').trim(),changelog
 if(!/^\d+\.\d+\.\d+$/.test(version))fail(`Invalid VERSION: ${version}`);
 if(!changelog.includes(`## v${version}`))fail(`CHANGELOG.md has no entry for v${version}`);
 
-for(const file of files.filter(f=>f.endsWith('.html'))){
-  const text=fs.readFileSync(file,'utf8'),source=rel(file),refs=[...text.matchAll(/(?:src|href)=["']([^"']+)["']/gi)].map(m=>m[1]);
-  for(const ref of refs){if(/^(https?:|mailto:|tel:|data:|javascript:|#)/i.test(ref))continue;const clean=ref.split('#')[0].split('?')[0];if(!clean)continue;const target=path.normalize(path.join(path.dirname(file),clean));if(!all.has(rel(target)))fail(`${source} references missing local asset: ${clean}`)}
-  if(!/<title>[^<]+<\/title>/i.test(text))fail(`${source} is missing a title element`);
-}
+for(const file of files.filter(f=>f.endsWith('.html'))){const text=fs.readFileSync(file,'utf8'),source=rel(file),refs=[...text.matchAll(/(?:src|href)=["']([^"']+)["']/gi)].map(m=>m[1]);for(const ref of refs){if(/^(https?:|mailto:|tel:|data:|javascript:|#)/i.test(ref))continue;const clean=ref.split('#')[0].split('?')[0];if(!clean)continue;const target=path.normalize(path.join(path.dirname(file),clean));if(!all.has(rel(target)))fail(`${source} references missing local asset: ${clean}`)}if(!/<title>[^<]+<\/title>/i.test(text))fail(`${source} is missing a title element`)}
 for(const file of files.filter(f=>f.endsWith('.js'))){const result=spawnSync(process.execPath,['--check',file],{encoding:'utf8'});if(result.status!==0){const detail=String(result.stderr||result.stdout||'').trim().split('\n').slice(0,3).join(' ');fail(`${rel(file)} has invalid JavaScript syntax${detail?`: ${detail}`:'.'}`)}}
 
 const payment=fs.readFileSync(path.join(root,'js/payment.js'),'utf8');
@@ -28,6 +24,11 @@ const library=fs.readFileSync(path.join(root,'js/library.js'),'utf8');
 if(/Farmakon|MCQStar|Q2Mid|Hepatix|Medi3y/.test(library))fail('js/library.js still contains hardcoded catalog entries.');
 const ios=fs.readFileSync(path.join(root,'js/ios-store.js'),'utf8');
 if(/ChatGPT|Notion|Threads|PDF Expert|Netflix|CapCut|Canva/.test(ios))fail('js/ios-store.js still contains illustrative hardcoded Apple catalog entries.');
+if(!ios.includes('iosCatalogSearch')||!ios.includes('apply()'))fail('js/ios-store.js is missing the v1.6 Apple catalog search/filter experience.');
+if(!ios.includes('featured?1:0'))fail('js/ios-store.js is missing featured Apple plan prioritization.');
+const offers=fs.readFileSync(path.join(root,'js/offers.js'),'utf8');
+if(!offers.includes("state(o)==='live'"))fail('js/offers.js is missing explicit live offer lifecycle gating.');
+if(!offers.includes('offerSearch')||!offers.includes('offer-filter'))fail('js/offers.js is missing the v1.6 Offers search/platform filters.');
 const homepage=fs.readFileSync(path.join(root,'index.html'),'utf8');
 if(/Farmakon|Q2Mid|Hepatix/.test(homepage))fail('index.html still contains hardcoded featured catalog examples.');
 if(!/100\+[^<]{0,80}Android applications/i.test(homepage)||!homepage.includes('$10 / year')||!homepage.includes('$25'))fail('index.html is missing the new subscription messaging.');
@@ -56,11 +57,7 @@ if(!all.has('storage.rules'))fail('storage.rules is missing.');
 for(const doc of ['docs/ARCHITECTURE.md','docs/DATA-MODEL.md','docs/SECURITY-ARCHITECTURE.md','docs/DEVELOPMENT.md','docs/PHASE-1-FOUNDATION.md'])if(!all.has(doc))fail(`${doc} is missing from the Phase 1 foundation.`);
 
 const designSystem=path.join(root,'css','design-system.css');
-if(!fs.existsSync(designSystem))fail('css/design-system.css is missing.');
-else {
-  const ds=fs.readFileSync(designSystem,'utf8');
-  for(const token of ['--msb-color-primary','--msb-color-text','--msb-color-surface','--msb-radius-md','--msb-focus-ring','prefers-reduced-motion'])if(!ds.includes(token))fail(`design-system.css is missing required foundation token or behavior: ${token}`);
-}
+if(!fs.existsSync(designSystem))fail('css/design-system.css is missing.');else{const ds=fs.readFileSync(designSystem,'utf8');for(const token of ['--msb-color-primary','--msb-color-text','--msb-color-surface','--msb-radius-md','--msb-focus-ring','prefers-reduced-motion'])if(!ds.includes(token))fail(`design-system.css is missing required foundation token or behavior: ${token}`)}
 const brandAssets=fs.readFileSync(path.join(root,'css','brand-assets.css'),'utf8');
 if(!brandAssets.startsWith("@import url('./design-system.css');"))fail('brand-assets.css must activate the canonical design system globally.');
 if(!brandAssets.includes("@import url('./public-experience.css');"))fail('brand-assets.css must activate the v1.5 public experience layer globally.');
@@ -68,7 +65,7 @@ if(!all.has('css/public-experience.css'))fail('css/public-experience.css is miss
 for(const asset of ['assets/img/medsbox-app-icon.svg','assets/img/medsbox-brand-mark.svg','assets/img/medsbox-logo-mark.svg','assets/img/medsbox-logo-mark-light.svg'])if(!all.has(asset))fail(`Approved brand asset is missing: ${asset}`);
 for(const doc of ['docs/DESIGN-SYSTEM.md','docs/PHASE-2-DESIGN.md'])if(!all.has(doc))fail(`${doc} is missing from Phase 2.`);
 if(!all.has('docs/PHASE-3-PUBLIC-EXPERIENCE.md'))fail('docs/PHASE-3-PUBLIC-EXPERIENCE.md is missing from v1.5.0.');
+if(!all.has('docs/PHASE-4-APPLE-OFFERS.md'))fail('docs/PHASE-4-APPLE-OFFERS.md is missing from v1.6.0.');
 
-note(`Checked ${files.length} repository files.`);note(`Release candidate: v${version}`);note('Checked local references, JavaScript syntax, fixed subscription pricing, account-free checkout, Telegram activation, live catalogs, admin sections, activation expiry integrity, core Firestore protections, Firebase infrastructure wiring, Phase 1 foundation, the MedSBoX Pro Brand & Design System, and the v1.5 Public Experience layer.');
-if(failures.length){console.error(`\nMedSBoX release check FAILED (${failures.length})`);for(const item of failures)console.error(`- ${item}`);process.exit(1)}
-console.log(`MedSBoX release check PASSED for v${version}`);for(const item of notes)console.log(`- ${item}`);
+note(`Checked ${files.length} repository files.`);note(`Release candidate: v${version}`);note('Checked local references, JavaScript syntax, fixed subscription pricing, account-free checkout, Telegram activation, live catalogs, Apple Store search/filter behavior, featured Apple plan ordering, offer lifecycle gating, Offers search/platform filters, admin sections, activation expiry integrity, core Firestore protections, Firebase infrastructure wiring, Phase 1 foundation, the MedSBoX Pro Brand & Design System, the v1.5 Public Experience layer, and the v1.6 Apple/Offers layer.');
+if(failures.length){console.error(`\nMedSBoX release check FAILED (${failures.length})`);for(const item of failures)console.error(`- ${item}`);process.exit(1)}console.log(`MedSBoX release check PASSED for v${version}`);for(const item of notes)console.log(`- ${item}`);

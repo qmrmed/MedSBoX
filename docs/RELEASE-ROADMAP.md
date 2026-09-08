@@ -8,58 +8,32 @@ Current baseline for the account-free customer journey, live catalog, subscripti
 
 ## v1.3.0 — Foundation & Architecture
 
-Phase 1 establishes the technical contract before major UX work:
-
-- runtime architecture and trust boundaries;
-- domain ownership and collection responsibilities;
-- Firestore data model and lifecycle invariants;
-- security architecture and privileged-operation boundaries;
-- development conventions;
-- version-controlled Firestore indexes;
-- explicit Storage Rules wiring in Firebase configuration;
-- phase acceptance criteria.
-
-See `docs/PHASE-1-FOUNDATION.md`.
+Phase 1 establishes the technical contract before major UX work.
 
 ## v1.4.0 — Brand & Design System
 
-Phase 2 establishes the visual source of truth before deeper page redesign:
-
-- preserve the approved MedSBoX identity sheet and canonical logo family;
-- semantic brand and surface tokens;
-- typography and spacing scales;
-- shape, elevation and depth rules;
-- controlled glass and restrained glow treatment;
-- light and dark semantic themes;
-- component interaction states;
-- 44px touch targets and visible focus states;
-- reduced-motion and forced-colors safeguards;
-- reusable motion tokens;
-- design-system documentation and release integrity checks.
-
-See `docs/DESIGN-SYSTEM.md`.
+Phase 2 establishes the visual source of truth before deeper page redesign.
 
 ## v1.5.0 — Public Website & Library
 
-Phase 3 applies the design foundation to the complete public customer journey:
-
-- premium homepage hierarchy and clearer conversion path;
-- Library discovery, search, categories, cards, detail/modal states and access messaging;
-- Offers campaign presentation and subscriber-first download messaging;
-- Apple Store device/catalog hierarchy and responsive presentation;
-- Subscription plan selection, payment handoff, order-reference visibility and support CTA;
-- Activation form, validation feedback and recovery path;
-- shared header, active navigation, theme control, mobile quick navigation and footer;
-- loading, empty, focus, hover, active and error states;
-- compact-phone, tablet and desktop responsive behavior;
-- reduced-motion and keyboard interaction safeguards;
-- no new runtime dependency and no change to the approved brand identity.
-
-See `docs/PHASE-3-PUBLIC-EXPERIENCE.md`.
+Phase 3 applies the design foundation to the complete public customer journey.
 
 ## v1.6.0 — Apple Store & Offers
 
-Build the Apple catalog experience and a complete offer/promotion lifecycle.
+Phase 4 turns the Apple Store and Offers surfaces into controlled product systems:
+
+- live Apple catalog search, category filtering and device-aware presentation;
+- live Apple subscription plan ordering with featured-plan prioritization;
+- subscriber-only Apple download delivery with device-specific links;
+- offer lifecycle handling for hidden, upcoming, live and expired campaigns;
+- public offer search and Android/Apple platform filtering;
+- protected offer delivery remains outside public catalog documents;
+- admin-managed scheduling, priority, publication state and device links remain the source of truth;
+- empty, unavailable and filtered-result states are explicit;
+- no hardcoded public Apple catalog or offer records;
+- no new runtime dependency and no change to the approved MedSBoX identity.
+
+See `docs/PHASE-4-APPLE-OFFERS.md`.
 
 ## v1.7.0 — Commerce, Subscriptions & Activation
 
