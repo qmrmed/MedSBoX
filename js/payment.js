@@ -1,50 +1,11 @@
-import{initializeApp}from'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
-import{getFirestore,doc,getDoc}from'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
-
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';import{getAuth,signInAnonymously}from'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';import{getFirestore,doc,getDoc,setDoc,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js';
 const PLANS={yearly:{id:'yearly',name:'Annual access',price:10,currency:'USD',period:'per year',description:'One year of access to 100+ ready-to-use Android applications.'},lifetime:{id:'lifetime',name:'Lifetime access',price:25,currency:'USD',period:'one time',description:'One-time access to 100+ ready-to-use Android applications.'}};
 const cfg={apiKey:'AIzaSyATRvlq7VzIYFrVSprw5yVzv0uu5d-QrVM',authDomain:'medsbox-pro.firebaseapp.com',projectId:'medsbox-pro',storageBucket:'medsbox-pro.firebasestorage.app',messagingSenderId:'145094360411',appId:'1:145094360411:web:c8a525881927c294682e7e'};
-const db=getFirestore(initializeApp(cfg));
-const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const requested=new URLSearchParams(location.search).get('plan')||'yearly';
-let currentPlan=PLANS[requested]?requested:'yearly';
-let currentPlanData=PLANS[currentPlan];
-const refCode=`MSB-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36).toUpperCase().slice(0,8)}`;
-$('refCode').textContent=refCode;$('refCode').title='Copy reference';
-$('refCode').onclick=async()=>{try{await navigator.clipboard.writeText(refCode);$('refCode').title='Reference copied'}catch{}};
-
-function formatPlan(p){
-  if(p.scope==='ios')return`${p.currency||'USD'} ${p.price} ${p.durationDays==null?'/ one time':`/ ${Math.max(1,Math.round(Number(p.durationDays)/30.4375))} mo`}`;
-  return`${p.currency||'USD'} ${p.price} ${p.period}`;
-}
-function updateTelegram(){
-  const p=currentPlanData||PLANS.yearly;
-  const msg=['Hello, I would like to subscribe and activate MedSBoX Pro.',`Plan: ${p.name} — ${formatPlan(p)}`,`Reference: ${refCode}`,p.scope==='ios'?'Access: Apple Store catalog':'Access: 100+ Android applications'];
-  $('telegramCta').href=`https://t.me/ID29i?text=${encodeURIComponent(msg.join('\n'))}`;
-}
-function render(){
-  const p=currentPlanData||PLANS.yearly;
-  $('planToggle').innerHTML=Object.values(PLANS).map(x=>`<button type="button" class="plan-toggle-btn ${x.id===currentPlan?'active':''}" data-plan="${x.id}" aria-pressed="${x.id===currentPlan?'true':'false'}"><span class="pt-name">${esc(x.name)}</span><span class="pt-price"><bdi>$${x.price}</bdi><small> / ${esc(x.period)}</small></span></button>`).join('');
-  document.querySelectorAll('.plan-toggle-btn').forEach(b=>b.addEventListener('click',()=>{currentPlan=b.dataset.plan;currentPlanData=PLANS[currentPlan];render()}));
-  $('planStatus').textContent=`Selected plan: ${p.name} — ${formatPlan(p)}`;
-  $('planStatus').className='plan-status';
-  updateTelegram();
-}
-async function loadRequestedIosPlan(){
-  if(!requested.startsWith('ios-'))return;
-  const id=requested.slice(4);
-  try{
-    const snap=await getDoc(doc(db,'iosPlans',id));
-    const data=snap.exists()?{id:snap.id,...snap.data()}:null;
-    if(data&&data.active!==false){
-      currentPlan=requested;
-      currentPlanData={...data,id:requested,scope:'ios',name:data.name||'Apple Store access'};
-      const button=`<button type="button" class="plan-toggle-btn active" data-plan="${esc(requested)}" aria-pressed="true"><span class="pt-name">${esc(currentPlanData.name)}</span><span class="pt-price"><bdi>${esc(currentPlanData.currency||'USD')} ${esc(currentPlanData.price)}</bdi><small> / ${currentPlanData.durationDays==null?'one time':`${Math.max(1,Math.round(Number(currentPlanData.durationDays)/30.4375))} mo`}</small></span></button>`;
-      $('planToggle').innerHTML=button;
-      $('planStatus').textContent=`Selected plan: ${currentPlanData.name} — ${formatPlan(currentPlanData)}`;
-      updateTelegram();
-    }else render();
-  }catch(error){console.warn('Apple plan lookup failed:',error);render();}
-}
-$('telegramCta').addEventListener('click',()=>{$('planStatus').textContent=`Opening Telegram for ${currentPlanData?.name||'subscription'} activation…`});
-render();
-loadRequestedIosPlan();
+const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const requested=new URLSearchParams(location.search).get('plan')||'yearly';let currentPlan=PLANS[requested]?requested:'yearly',currentPlanData=PLANS[currentPlan],iosPlan=false;const refCode=`MSB-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36).toUpperCase().slice(0,8)}`;$('refCode').textContent=refCode;$('refCode').title='Copy reference';$('refCode').onclick=async()=>{try{await navigator.clipboard.writeText(refCode);$('refCode').title='Reference copied'}catch{}};
+function formatPlan(p){if(p.scope==='ios')return`${p.currency||'USD'} ${p.price} ${p.durationDays==null?'/ one time':`/ ${Math.max(1,Math.round(Number(p.durationDays)/30.4375))} mo`}`;return`${p.currency||'USD'} ${p.price} ${p.period}`}
+function telegramUrl(){const p=currentPlanData||PLANS.yearly;const msg=['Hello, I would like to subscribe and activate MedSBoX Pro.',`Plan: ${p.name} — ${formatPlan(p)}`,`Reference: ${refCode}`,p.scope==='ios'?'Access: Apple Store catalog':'Access: 100+ Android applications'];return`https://t.me/ID29i?text=${encodeURIComponent(msg.join('\n'))}`}
+async function createOrder(){if(iosPlan)return;const key=`medsbox-order:${refCode}`;if(sessionStorage.getItem(key))return JSON.parse(sessionStorage.getItem(key));const user=auth.currentUser||(await signInAnonymously(auth)).user;const order={orderId:refCode,reference:refCode,userId:user.uid,planId:currentPlanData.id,planName:currentPlanData.name,amount:Number(currentPlanData.price),currency:currentPlanData.currency,status:'pending',createdAt:serverTimestamp(),source:'payment-page',updatedAt:serverTimestamp()};await setDoc(doc(db,'orders',refCode),order);const local={orderId:refCode,userId:user.uid,status:'pending'};sessionStorage.setItem(key,JSON.stringify(local));return local}
+function render(){const p=currentPlanData||PLANS.yearly;$('planToggle').innerHTML=iosPlan?`<button type="button" class="plan-toggle-btn active" aria-pressed="true"><span class="pt-name">${esc(p.name)}</span><span class="pt-price"><bdi>${esc(p.currency||'USD')} ${esc(p.price)}</bdi><small> / ${p.durationDays==null?'one time':`${Math.max(1,Math.round(Number(p.durationDays)/30.4375))} mo`}</small></span></button>`:Object.values(PLANS).map(x=>`<button type="button" class="plan-toggle-btn ${x.id===currentPlan?'active':''}" data-plan="${x.id}" aria-pressed="${x.id===currentPlan?'true':'false'}"><span class="pt-name">${esc(x.name)}</span><span class="pt-price"><bdi>$${x.price}</bdi><small> / ${esc(x.period)}</small></span></button>`).join('');document.querySelectorAll('.plan-toggle-btn[data-plan]').forEach(b=>b.addEventListener('click',()=>{currentPlan=b.dataset.plan;currentPlanData=PLANS[currentPlan];iosPlan=false;render();}));$('planStatus').textContent=`Selected plan: ${p.name} — ${formatPlan(p)}`;$('planStatus').className='plan-status';$('telegramCta').href=telegramUrl()}
+async function loadRequestedIosPlan(){if(!requested.startsWith('ios-'))return;try{const id=requested.slice(4),snap=await getDoc(doc(db,'iosPlans',id)),data=snap.exists()?{id:snap.id,...snap.data()}:null;if(data&&data.active!==false){currentPlan=requested;currentPlanData={...data,id:requested,scope:'ios',name:data.name||'Apple Store access'};iosPlan=true;render()}else render()}catch(error){console.warn('Apple plan lookup failed:',error);render()}}
+$('telegramCta').addEventListener('click',async e=>{e.preventDefault();if(iosPlan){location.href=telegramUrl();return}if(!currentPlanData){return}$('telegramCta').setAttribute('aria-busy','true');$('planStatus').textContent='Preparing your secure order…';try{const order=await createOrder();$('planStatus').textContent=`Order ${order.orderId} is ready. Opening Telegram for activation instructions…`;location.href=telegramUrl()}catch(error){console.error('Order creation failed',error);$('planStatus').textContent='We could not create the order yet. Please try again.';alert(error?.message||'Unable to create order.')}finally{$('telegramCta').removeAttribute('aria-busy')}});render();loadRequestedIosPlan();

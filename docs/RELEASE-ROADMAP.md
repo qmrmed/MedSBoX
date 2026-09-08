@@ -20,28 +20,27 @@ Phase 3 applies the design foundation to the complete public customer journey.
 
 ## v1.6.0 — Apple Store & Offers
 
-Phase 4 turns the Apple Store and Offers surfaces into controlled product systems:
-
-- live Apple catalog search, category filtering and device-aware presentation;
-- live Apple subscription plan ordering with featured-plan prioritization;
-- subscriber-only Apple download delivery with device-specific links;
-- offer lifecycle handling for hidden, upcoming, live and expired campaigns;
-- public offer search and Android/Apple platform filtering;
-- protected offer delivery remains outside public catalog documents;
-- admin-managed scheduling, priority, publication state and device links remain the source of truth;
-- empty, unavailable and filtered-result states are explicit;
-- no hardcoded public Apple catalog or offer records;
-- no new runtime dependency and no change to the approved MedSBoX identity.
-
-See `docs/PHASE-4-APPLE-OFFERS.md`.
+Phase 4 turns the Apple Store and Offers surfaces into controlled product systems.
 
 ## v1.7.0 — Commerce, Subscriptions & Activation
 
-Harden the complete order-to-access journey, including lifecycle states, idempotency, subscription access and activation integrity.
+Phase 5 hardens the order-to-access chain:
+
+- real pending orders are created from Android checkout;
+- duplicate checkout clicks are idempotent within a session;
+- order amount/currency must match the active plan in Rules;
+- Admin code issuance is atomic with the order transition to `code_issued`;
+- activation codes are linked to orders without device-locking the customer;
+- activation validates active plan and duration integrity;
+- subscription access is denied automatically after expiry through Rules;
+- activation and code consumption remain transactional;
+- no password-based public account flow is introduced.
+
+See `docs/PHASE-5-COMMERCE-ACTIVATION.md`.
 
 ## v1.8.0 — Admin Control Center & Operations
 
-Turn Admin into a real control center with catalog, commerce, access, users, system controls, auditability and operational visibility.
+Expand Admin into a complete operational console: catalog, Apple catalog, campaigns, commerce, access, users, audit trail, bulk operations, validation and recovery tooling.
 
 ## v1.9.0 — Security, Performance & Quality
 

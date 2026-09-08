@@ -1,5 +1,18 @@
 # MedSBoX Pro Changelog
 
+## v1.7.0 — Commerce, Subscriptions & Activation
+
+- Android checkout now creates a real pending order before the Telegram handoff.
+- Checkout references are deterministic order IDs and repeated clicks in one session reuse the same order.
+- Firestore Rules verify that order amount and currency match the active subscription plan.
+- Admin activation-code issuance is atomic: the code and `code_issued` order state commit together.
+- Issued codes remain portable across devices while retaining an immutable order linkage.
+- Activation validates the active plan, duration integrity and issued-order linkage before granting access.
+- Subscription activation and code consumption remain one transaction.
+- Expired subscriptions are denied by the subscriber security rule without depending on client cleanup.
+- Strengthened the Admin and activation security contract without introducing password-based public accounts.
+- Added the Phase 5 commerce/activation acceptance documentation and release gate.
+
 ## v1.6.0 — Apple Store & Offers Experience
 
 - Upgraded the Apple Store public catalog with live search and result feedback.
