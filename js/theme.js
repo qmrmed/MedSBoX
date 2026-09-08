@@ -40,6 +40,7 @@
     const nav = document.createElement('nav');
     nav.className = 'vision-bottom-nav';
     nav.setAttribute('aria-label', 'Quick navigation');
+    nav.style.transition = 'transform .32s cubic-bezier(.22,.8,.25,1),opacity .24s ease';
     nav.innerHTML = `
       <a href="index.html" class="${active('home') ? 'active' : ''}"><i class="fa-solid fa-house"></i><span>Home</span></a>
       <a href="library.html" class="${active('library') ? 'active' : ''}"><i class="fa-solid fa-table-cells"></i><span>Library</span></a>
@@ -54,9 +55,10 @@
       const y = window.scrollY;
       const delta = y - lastY;
       if (Math.abs(delta) > 8) {
-        nav.style.transform = delta > 0 && y > 120 ? 'translateY(calc(120% + env(safe-area-inset-bottom)))' : 'translateY(0)';
-        nav.style.opacity = delta > 0 && y > 120 ? '0' : '1';
-        nav.style.pointerEvents = delta > 0 && y > 120 ? 'none' : 'auto';
+        const hidden = delta > 0 && y > 120;
+        nav.style.transform = hidden ? 'translateY(calc(120% + env(safe-area-inset-bottom)))' : 'translateY(0)';
+        nav.style.opacity = hidden ? '0' : '1';
+        nav.style.pointerEvents = hidden ? 'none' : 'auto';
         lastY = y;
       }
       ticking = false;
