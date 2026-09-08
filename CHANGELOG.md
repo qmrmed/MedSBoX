@@ -1,5 +1,18 @@
 # MedSBoX Pro Changelog
 
+## v1.3.0 — Foundation & Architecture
+
+- Established the MedSBoX runtime architecture and explicit trust boundaries.
+- Documented domain ownership for catalog, commerce, access, administration and protected downloads.
+- Defined the Firestore data model, field contracts and subscription/activation lifecycle invariants.
+- Documented the security architecture and trusted-operation boundaries for Cloud Functions, Firestore Rules and Storage.
+- Added development conventions covering modules, data validation, error states, accessibility, performance and release discipline.
+- Added version-controlled Firestore composite indexes for subscription-expiry processing.
+- Wired `firestore.indexes.json` into Firebase configuration.
+- Wired `storage.rules` into Firebase configuration so Storage security rules are part of the controlled deployment configuration.
+- Prevented Firebase infrastructure files from being published as Hosting assets.
+- Added Phase 1 acceptance criteria and aligned the release roadmap with the long-term MedSBoX Pro master plan.
+
 ## v1.2.2 — Complete storefront, UX & flow audit
 
 - Completed a repository-wide public experience audit across Home, Library, Offers, Subscription, Activation, Apple Store and shared navigation.
