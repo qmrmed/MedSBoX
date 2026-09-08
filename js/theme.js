@@ -71,9 +71,43 @@
     }, {passive:true});
   };
 
+  const addPageInteractions = () => {
+    const header = document.querySelector('.header');
+    let ticking = false;
+    const syncHeader = () => {
+      if (header) header.classList.toggle('scrolled', window.scrollY > 24);
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(syncHeader);
+        ticking = true;
+      }
+    }, {passive:true});
+    syncHeader();
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const revealTargets = document.querySelectorAll('.section, .hero-card, .app-card, .store-app, .ios-plan, .pay-step, .social-card, .support-note, .activation-card, .access-notice, .empty-state');
+    if (!('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('vf-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.08, rootMargin:'0px 0px -7% 0px'});
+    revealTargets.forEach((el,index) => {
+      el.classList.add('vf-reveal');
+      el.style.setProperty('--vf-delay', `${Math.min(index % 5, 4) * 45}ms`);
+      observer.observe(el);
+    });
+  };
+
   const init = () => {
     apply(getPreference());
     addMobileNav();
+    addPageInteractions();
     const button = document.getElementById('themeButton');
     const menu = document.getElementById('themeMenu');
     if (button && menu) {
