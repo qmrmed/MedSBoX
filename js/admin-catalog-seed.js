@@ -3,6 +3,7 @@ import './admin-apple-seed.js';
 import './admin-apple-plan-sync.js';
 import './admin-apple-plan-actions.js';
 import './admin-offer-migrate.js';
+import './admin-app-migrate.js';
 import './admin-app-cleanup.js';
 import './admin-code-manager.js';
 import { getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
