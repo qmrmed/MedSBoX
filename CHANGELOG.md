@@ -1,12 +1,37 @@
 # MedSBoX Pro Changelog
 
-## v1.1.2 — Security, catalog hygiene & payment hardening
+## v1.1.2 — Security & data hygiene
 
-- Added a one-time admin migration for legacy application Telegram links so private download URLs move from public `apps` documents into protected `appDownloads` records.
-- Sequenced the application migration before the Admin catalog controls to reduce the chance of legacy public links remaining after an admin opens the console.
-- Removed hardcoded subscription fallback pricing from the payment page; payment plans now come from the live Admin-controlled Firestore catalog, with a clear unavailable state when no active plan exists.
-- Added repository ignore rules for Firebase local state and dependency artifacts so local deployment files are not accidentally committed.
-- Preserved the existing Apple Store, Offers & Ads, Library, activation-code, and subscription security model while tightening catalog/payment data ownership.
+- Migrated legacy application Telegram download links from public `apps` documents into protected `appDownloads` records before the Admin catalog controls load.
+- Added local repository hygiene so Firebase metadata, local Hosting artifacts, and dependency folders are not accidentally committed.
+- Removed hardcoded client-side subscription fallback pricing; the payment page now shows an explicit unavailable state when Admin-controlled plans cannot be loaded.
+- Preserved the Admin Users section after a markup regression and refreshed Admin module cache versions.
+- Added a dependency-free release integrity checker under `tools/release-check.mjs`.
+
+## v1.1.3 — Hosting & public UX hardening (prepared)
+
+- Added clean URL/trailing-slash behavior to Firebase Hosting.
+- Added `no-cache`, `nosniff`, and strict-origin referrer behavior for HTML responses so new releases are less likely to be hidden by stale browser caches.
+- Added a branded custom 404 experience with direct Home and Library recovery actions.
+
+## v1.1.4 — Admin navigation hardening (prepared)
+
+- Added stable hash-based Admin section navigation so a selected control-center area can be deep-linked and restored after navigation.
+- Kept the existing Admin CRUD modules intact while adding navigation behavior as a non-invasive layer to reduce regression risk.
+
+## v1.1.5 — Firestore validation hardening (prepared)
+
+- Strengthened order creation validation with required-field, type, identity, active-plan, price, currency, and document-ID checks.
+- Preserved the existing protected collections and activation-code lifecycle.
+
+## v1.2.1 — Major architecture & experience release (planned)
+
+- Major milestone for the next large development phase.
+- Unify catalog/application contracts and reduce duplicated Admin handlers.
+- Strengthen Firestore field/type validation without exposing private delivery data.
+- Improve authentication/session states, subscription/order/activation state handling, Library discovery, Apple Store discovery, accessibility, responsive UX, and performance.
+- Introduce systematic loading/error/empty-state behavior and a repeatable regression gate.
+- Evaluate Firebase App Check as an optional security layer only after configuration and cost/compatibility review.
 
 ## v1.1.1 — Catalog, Apple Store & Activation hardening
 
