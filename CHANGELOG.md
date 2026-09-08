@@ -1,5 +1,13 @@
 # MedSBoX Pro Changelog
 
+## v2.0.1 — Design System Consolidation
+
+- Replaced the legacy visual stylesheet with a structural compatibility layer.
+- Established `design-system.css` and `public-experience.css` as the single visual authority.
+- Removed competing hard-coded colors, surfaces, typography and interaction styling from `style.css`.
+- Strengthened the release checker to prevent legacy hard-coded color declarations from returning.
+- Kept existing structural selectors and responsive layout contracts intact while consolidating visual behavior.
+
 ## v2.0.0 — Production Milestone
 
 - Consolidated Phases 1–7 into the production release candidate.
