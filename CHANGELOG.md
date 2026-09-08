@@ -23,7 +23,7 @@
 - Added subtle ambient motion, liquid-glass sweep, button shimmer, page reveal transitions, adaptive header material, active-navigation motion, and reduced-motion fallbacks for a more polished interaction system.
 - Removed hardcoded homepage subscription pricing and Apple Store pricing copy in favor of Admin-controlled live states.
 - Hardened checkout integrity so Telegram is opened only after the pending order has been successfully recorded; recording failures now remain on the payment page with an actionable error state.
-- Improved Payment empty-state behavior and prevented disabled checkout actions when no plan is available.
+- Improved Payment empty-state behavior, lifetime duration rendering, inline failure messaging, and checkout busy-state handling so users are never sent to Telegram after a failed order write.
 - Hardened Admin application deletion so protected download records are removed together with the public application, and Admin now reports protected download-link counts from the secure collection.
 - Preserved persistent authentication sessions and password-reset handling.
 - Added a staged roadmap for future security and platform improvements, including optional Firebase App Check evaluation after compatibility and cost review.
