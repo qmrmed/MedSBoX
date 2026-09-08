@@ -1,5 +1,13 @@
 # MedSBoX Pro Changelog
 
+## v1.1.2 — Security, catalog hygiene & payment hardening
+
+- Added a one-time admin migration for legacy application Telegram links so private download URLs move from public `apps` documents into protected `appDownloads` records.
+- Sequenced the application migration before the Admin catalog controls to reduce the chance of legacy public links remaining after an admin opens the console.
+- Removed hardcoded subscription fallback pricing from the payment page; payment plans now come from the live Admin-controlled Firestore catalog, with a clear unavailable state when no active plan exists.
+- Added repository ignore rules for Firebase local state and dependency artifacts so local deployment files are not accidentally committed.
+- Preserved the existing Apple Store, Offers & Ads, Library, activation-code, and subscription security model while tightening catalog/payment data ownership.
+
 ## v1.1.1 — Catalog, Apple Store & Activation hardening
 
 - Reworked the Library data model so public applications are real Firestore records; no hardcoded fallback catalog is used.
