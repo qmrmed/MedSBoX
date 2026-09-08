@@ -10,7 +10,9 @@
 - Reworked public Library, Offers, Apple Store, Activation, and homepage navigation to use the account-free customer journey.
 - Added a more refined Liquid Glass visual layer with flowing ambient forms, glass surfaces, responsive spacing, subtle page transitions, motion-safe reveals, and a floating mobile navigation pill.
 - Added stronger subscription hierarchy, plan emphasis, CTA consistency, and mobile-first layout behavior.
-- Updated the release integrity gate to validate the new account-free activation architecture and fixed subscription pricing.
+- Expanded the release integrity gate with responsive metadata, accessibility checks, and CSS motion-safety coverage.
+- Removed empty legacy Telegram link fields from starter catalog creation so public application records stay metadata-only.
+- Consolidated the final Admin catalog hardening layer for protected download-link counts and safe application deletion.
 
 ## v1.2.1 — Major architecture, security & experience release
 
