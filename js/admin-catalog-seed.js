@@ -29,7 +29,6 @@ const seedMissingApps = async () => {
     description: a.description,
     iconUrl: '',
     platforms: a.platforms,
-    telegramUrls: {},
     active: true,
     updatedAt: serverTimestamp()
   })));
