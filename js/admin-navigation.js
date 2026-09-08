@@ -1,6 +1,0 @@
-const sectionNames={overview:'Overview',apps:'Applications',offers:'Offers & Ads',plans:'Subscriptions',orders:'Orders',codes:'Activation Codes',users:'Users',iosapps:'Apple Store'};
-function selectSection(name){const button=document.querySelector(`[data-section="${CSS.escape(name)}"]`);if(button){button.click();return true}const target=document.getElementById(name);if(target){document.querySelectorAll('.admin-section').forEach(x=>x.classList.toggle('active',x===target));document.querySelectorAll('[data-section]').forEach(x=>x.classList.toggle('active',x.dataset.section===name));const title=document.getElementById('pageTitle');if(title)title.textContent=sectionNames[name]||name;return true}return false}
-function syncFromHash(){const name=location.hash.replace(/^#/,'').trim();if(name)selectSection(name)}
-document.addEventListener('click',event=>{const el=event.target.closest?.('[data-section]');if(!el)return;const name=el.dataset.section;if(name&&history.replaceState)history.replaceState(null,'',`#${encodeURIComponent(name)}`)},true);
-window.addEventListener('hashchange',syncFromHash);
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncFromHash,{once:true});else syncFromHash();
