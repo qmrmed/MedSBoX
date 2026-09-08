@@ -47,6 +47,26 @@
       <a href="payment.html" class="${active('plans') ? 'active' : ''}"><i class="fa-solid fa-star"></i><span>Plans</span></a>
       <a href="https://t.me/ID29i" target="_blank" rel="noopener" aria-label="Support"><i class="fa-brands fa-telegram"></i><span>Support</span></a>`;
     document.body.appendChild(nav);
+
+    let lastY = window.scrollY;
+    let ticking = false;
+    const syncNav = () => {
+      const y = window.scrollY;
+      const delta = y - lastY;
+      if (Math.abs(delta) > 8) {
+        nav.style.transform = delta > 0 && y > 120 ? 'translateY(calc(120% + env(safe-area-inset-bottom)))' : 'translateY(0)';
+        nav.style.opacity = delta > 0 && y > 120 ? '0' : '1';
+        nav.style.pointerEvents = delta > 0 && y > 120 ? 'none' : 'auto';
+        lastY = y;
+      }
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(syncNav);
+        ticking = true;
+      }
+    }, {passive:true});
   };
 
   const init = () => {
