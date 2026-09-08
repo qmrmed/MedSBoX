@@ -1,4 +1,5 @@
 @import url('./design-system.css');
+@import url('./public-experience.css');
 
 /* MedSBoX Pro — canonical approved brand assets */
 .brand .brand-logo-img{width:38px;height:38px;display:block;flex:0 0 38px;object-fit:contain;object-position:center;border-radius:12px;filter:drop-shadow(0 0 16px rgba(77,231,255,.42))}
