@@ -62,7 +62,7 @@ else {
 const brandAssets=fs.readFileSync(path.join(root,'css','brand-assets.css'),'utf8');
 if(!brandAssets.startsWith("@import url('./design-system.css');"))fail('brand-assets.css must activate the canonical design system globally.');
 for(const asset of ['assets/img/medsbox-app-icon.svg','assets/img/medsbox-brand-mark.svg','assets/img/medsbox-logo-mark.svg','assets/img/medsbox-logo-mark-light.svg'])if(!all.has(asset))fail(`Approved brand asset is missing: ${asset}`);
-if(!all.has('docs/DESIGN-SYSTEM.md'))fail('docs/DESIGN-SYSTEM.md is missing.');
+for(const doc of ['docs/DESIGN-SYSTEM.md','docs/PHASE-2-DESIGN.md'])if(!all.has(doc))fail(`${doc} is missing from Phase 2.`);
 
 note(`Checked ${files.length} repository files.`);note(`Release candidate: v${version}`);note('Checked local references, JavaScript syntax, fixed subscription pricing, account-free checkout, Telegram activation, live catalogs, admin sections, activation expiry integrity, core Firestore protections, Firebase infrastructure wiring, Phase 1 foundation, and the MedSBoX Pro Brand & Design System.');
 if(failures.length){console.error(`\nMedSBoX release check FAILED (${failures.length})`);for(const item of failures)console.error(`- ${item}`);process.exit(1)}
