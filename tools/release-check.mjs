@@ -53,6 +53,17 @@ if(!all.has('firestore.indexes.json'))fail('firestore.indexes.json is missing.')
 if(!all.has('storage.rules'))fail('storage.rules is missing.');
 for(const doc of ['docs/ARCHITECTURE.md','docs/DATA-MODEL.md','docs/SECURITY-ARCHITECTURE.md','docs/DEVELOPMENT.md','docs/PHASE-1-FOUNDATION.md'])if(!all.has(doc))fail(`${doc} is missing from the Phase 1 foundation.`);
 
-note(`Checked ${files.length} repository files.`);note(`Release candidate: v${version}`);note('Checked local references, JavaScript syntax, fixed subscription pricing, account-free checkout, Telegram activation, live catalogs, admin sections, activation expiry integrity, core Firestore protections, Firebase infrastructure wiring, and Phase 1 foundation documentation.');
+const designSystem=path.join(root,'css','design-system.css');
+if(!fs.existsSync(designSystem))fail('css/design-system.css is missing.');
+else {
+  const ds=fs.readFileSync(designSystem,'utf8');
+  for(const token of ['--msb-color-primary','--msb-color-text','--msb-color-surface','--msb-radius-md','--msb-focus-ring','prefers-reduced-motion'])if(!ds.includes(token))fail(`design-system.css is missing required foundation token or behavior: ${token}`);
+}
+const brandAssets=fs.readFileSync(path.join(root,'css','brand-assets.css'),'utf8');
+if(!brandAssets.startsWith("@import url('./design-system.css');"))fail('brand-assets.css must activate the canonical design system globally.');
+for(const asset of ['assets/img/medsbox-app-icon.svg','assets/img/medsbox-brand-mark.svg','assets/img/medsbox-logo-mark.svg','assets/img/medsbox-logo-mark-light.svg'])if(!all.has(asset))fail(`Approved brand asset is missing: ${asset}`);
+if(!all.has('docs/DESIGN-SYSTEM.md'))fail('docs/DESIGN-SYSTEM.md is missing.');
+
+note(`Checked ${files.length} repository files.`);note(`Release candidate: v${version}`);note('Checked local references, JavaScript syntax, fixed subscription pricing, account-free checkout, Telegram activation, live catalogs, admin sections, activation expiry integrity, core Firestore protections, Firebase infrastructure wiring, Phase 1 foundation, and the MedSBoX Pro Brand & Design System.');
 if(failures.length){console.error(`\nMedSBoX release check FAILED (${failures.length})`);for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log(`MedSBoX release check PASSED for v${version}`);for(const item of notes)console.log(`- ${item}`);
