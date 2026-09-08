@@ -1,0 +1,1 @@
+import './admin-offers-v2.js';

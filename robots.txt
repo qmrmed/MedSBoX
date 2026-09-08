@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /activation.html
+Disallow: /payment.html
+Sitemap: https://medsbox-pro.web.app/sitemap.xml
