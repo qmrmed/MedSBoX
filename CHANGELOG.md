@@ -8,7 +8,8 @@
 - Added subscriber-aware delivery: active subscribers are sent directly to the matching Telegram download post; visitors are routed into registration and the selected subscription plan.
 - Added monthly, yearly, and lifetime offer types.
 - Added public Offers entry points across the homepage and Library.
-- Added secure Firestore rules for the new `offers` collection.
+- Added secure Firestore rules for the new `offers`, `offerDownloads`, and `appDownloads` collections.
+- Moved download URLs out of public application/offer documents so they are only readable by active subscribers or admins.
 - Fixed the Library to query only active applications and removed the misleading hardcoded fallback catalog.
 - Added direct registration opening from campaign links.
 - Included the pending v1.0.1 admin catalog initialization fix in this release line.
