@@ -45,6 +45,14 @@ if(!rules.includes("userData.expiresAt>request.time+duration.value(codeData.dura
 const theme=fs.readFileSync(path.join(root,'js/theme.js'),'utf8');
 if(!theme.includes('normalizePublicFlow'))fail('theme.js is missing public account-flow normalization.');
 
-note(`Checked ${files.length} repository files.`);note(`Release candidate: v${version}`);note('Checked local references, JavaScript syntax, fixed subscription pricing, account-free checkout, Telegram activation, live catalogs, admin sections, activation expiry integrity, and core Firestore protections.');
+const firebaseConfig=JSON.parse(fs.readFileSync(path.join(root,'firebase.json'),'utf8'));
+if(firebaseConfig.firestore?.rules!=='firestore.rules')fail('firebase.json is not wired to firestore.rules.');
+if(firebaseConfig.firestore?.indexes!=='firestore.indexes.json')fail('firebase.json is not wired to firestore.indexes.json.');
+if(firebaseConfig.storage?.rules!=='storage.rules')fail('firebase.json is not wired to storage.rules.');
+if(!all.has('firestore.indexes.json'))fail('firestore.indexes.json is missing.');
+if(!all.has('storage.rules'))fail('storage.rules is missing.');
+for(const doc of ['docs/ARCHITECTURE.md','docs/DATA-MODEL.md','docs/SECURITY-ARCHITECTURE.md','docs/DEVELOPMENT.md','docs/PHASE-1-FOUNDATION.md'])if(!all.has(doc))fail(`${doc} is missing from the Phase 1 foundation.`);
+
+note(`Checked ${files.length} repository files.`);note(`Release candidate: v${version}`);note('Checked local references, JavaScript syntax, fixed subscription pricing, account-free checkout, Telegram activation, live catalogs, admin sections, activation expiry integrity, core Firestore protections, Firebase infrastructure wiring, and Phase 1 foundation documentation.');
 if(failures.length){console.error(`\nMedSBoX release check FAILED (${failures.length})`);for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log(`MedSBoX release check PASSED for v${version}`);for(const item of notes)console.log(`- ${item}`);
